@@ -1,0 +1,18 @@
+defaults:
+  - _self_
+
+seed: 42
+policy: lewm_rf  # checkpoint name relative to $STABLEWM_HOME, without _object.ckpt
+
+data:
+  test_path: /Users/guynachshon/Documents/ozlabs/labs/ChangShuoRadioData/data/lewm/processed/test.h5
+  history_size: 3
+  normalize: True
+
+eval:
+  num_eval: 500
+  max_rollout_steps: 12
+  batch_size: 64
+
+output:
+  filename: rf_results.txt

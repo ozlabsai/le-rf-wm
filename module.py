@@ -257,6 +257,7 @@ class ARPredictor(nn.Module):
         dim_head=64,
         dropout=0.0,
         emb_dropout=0.0,
+        block_class=ConditionalBlock,
     ):
         super().__init__()
         self.pos_embedding = nn.Parameter(torch.randn(1, num_frames, input_dim))
@@ -270,13 +271,13 @@ class ARPredictor(nn.Module):
             dim_head,
             mlp_dim,
             dropout,
-            block_class=ConditionalBlock,
+            block_class=block_class,
         )
 
-    def forward(self, x, c):
+    def forward(self, x, c=None):
         """
         x: (B, T, d)
-        c: (B, T, act_dim)
+        c: (B, T, act_dim) or None for unconditional prediction
         """
         T = x.size(1)
         x = x + self.pos_embedding[:, :T]

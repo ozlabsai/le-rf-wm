@@ -14,7 +14,7 @@ class JEPA(nn.Module):
         self,
         encoder,
         predictor,
-        action_encoder,
+        action_encoder=None,
         projector=None,
         pred_proj=None,
     ):
@@ -44,10 +44,22 @@ class JEPA(nn.Module):
 
         return info
 
-    def predict(self, emb, act_emb):
+    def encode_rf(self, info):
+        """Encode RF spectrogram observations into embeddings.
+        info: dict with 'observations' key of shape (B, T, C, F, T_bins)
+        """
+        obs = info['observations'].float()
+        b = obs.size(0)
+        obs = rearrange(obs, "b t ... -> (b t) ...")
+        emb = self.encoder(obs)  # SpectrogramViT returns (B*T, D)
+        emb = self.projector(emb)
+        info["emb"] = rearrange(emb, "(b t) d -> b t d", b=b)
+        return info
+
+    def predict(self, emb, act_emb=None):
         """Predict next state embedding
         emb: (B, T, D)
-        act_emb: (B, T, A_emb)
+        act_emb: (B, T, A_emb) or None for unconditional prediction
         """
         preds = self.predictor(emb, act_emb)
         preds = self.pred_proj(rearrange(preds, "b t d -> (b t) d"))
@@ -108,6 +120,17 @@ class JEPA(nn.Module):
         info["predicted_emb"] = pred_rollout
 
         return info
+
+    def rollout_unconditional(self, emb, n_steps, history_size=3):
+        """Autoregressive rollout without actions.
+        emb: (B, T, D) — initial context embeddings
+        Returns: (B, T + n_steps, D) — context + predicted embeddings
+        """
+        for _ in range(n_steps):
+            emb_ctx = emb[:, -history_size:]
+            pred = self.predict(emb_ctx)[:, -1:]
+            emb = torch.cat([emb, pred], dim=1)
+        return emb
 
     def criterion(self, info_dict: dict):
         """Compute the cost between predicted embeddings and goal embeddings."""

@@ -1,0 +1,44 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# uv
+uv.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Testing / typing / coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Hydra / Lightning / W&B / local runs
+outputs/
+lightning_logs/
+wandb/
+.hydra/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+
+# Local env / secrets (never commit keys)
+.env
+.env.*
+!.env.example

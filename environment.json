@@ -1,0 +1,38 @@
+{
+  "timestamp": "2026-03-28T18:42:32.742903",
+  "python": {
+    "version": "3.13.3 (main, May 30 2025, 05:45:55) [Clang 20.1.4 ]",
+    "version_info": {
+      "major": 3,
+      "minor": 13,
+      "micro": 3
+    },
+    "executable": "/Users/guynachshon/Documents/ozlabs/.venv/bin/python3",
+    "prefix": "/Users/guynachshon/Documents/ozlabs/.venv"
+  },
+  "system": {
+    "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+    "system": "Darwin",
+    "release": "25.3.0",
+    "machine": "arm64",
+    "processor": "arm",
+    "hostname": "MacBook-Pro-2.local"
+  },
+  "packages": {
+    "pip_freeze": "Error getting pip freeze: Command '['/Users/guynachshon/Documents/ozlabs/.venv/bin/python3', '-m', 'pip', 'freeze']' returned non-zero exit status 1.",
+    "key_packages": {},
+    "total_packages": 0
+  },
+  "cuda": null,
+  "git": {
+    "commit_hash": "ca231f9f9d9ab041034b6d05e90b6e04bd6cff82",
+    "branch": "main",
+    "has_uncommitted_changes": true,
+    "uncommitted_changes": "M jepa.py\n M module.py\n?? .gitignore\n?? CLAUDE.md\n?? DATASET.md\n?? __pycache__/\n?? config/eval/rf.yaml\n?? config/train/data/rf.yaml\n?? config/train/lewm_rf.yaml\n?? dataset.py\n?? encoder.py\n?? eval_rf.py\n?? main.py\n?? outputs/\n?? pyproject.toml\n?? smoke_test.py\n?? train_rf.py",
+    "remote_url": "git@github.com:ozlabsai/le-rf-wm.git"
+  },
+  "slurm": null,
+  "environment_variables": {
+    "PATH": "/Users/guynachshon/Documents/ozlabs/.venv/bin:/Users/guynachshon/.antigravity/antigravity/bin:/Users/guynachshon/Library/Python/3.9/bin:/Users/guynachshon/miniconda3/bin:/Library/Frameworks/Python.framework/Versions/3.11/bin:/Library/Frameworks/Python.framework/Versions/3.10/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/opt/pmk/env/global/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/usr/local/go/bin:/Users/guynachshon/.antigravity/antigravity/bin:/Users/guynachshon/Library/Python/3.9/bin:/Users/guynachshon/Library/pnpm:/Users/guynachshon/miniconda3/bin:/Library/Frameworks/Python.framework/Versions/3.11/bin:/Library/Frameworks/Python.framework/Versions/3.10/bin:/Users/guynachshon/.cargo/bin:/Users/guynachshon/.local/bin:/Users/guynachshon/.dotnet/tools:/Users/guynachshon/go/bin:/Users/guynachshon/.cursor/extensions/ms-python.debugpy-2025.18.0-darwin-arm64/bundled/scripts/noConfigScripts:/usr/local/bin:/Users/guynachshon/.local/bin:/Users/guynachshon/.dotnet/tools:/Users/guynachshon/.local/bin:/Users/guynachshon/go/bin"
+  }
+}

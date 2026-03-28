@@ -1,0 +1,5 @@
+train_path: /Users/guynachshon/Documents/ozlabs/labs/ChangShuoRadioData/data/lewm/processed/train.h5
+val_path: /Users/guynachshon/Documents/ozlabs/labs/ChangShuoRadioData/data/lewm/processed/val.h5
+history_size: ${wm.history_size}
+num_preds: ${wm.num_preds}
+normalize: True  # global per-channel mean/std from train split

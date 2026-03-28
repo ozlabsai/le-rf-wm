@@ -1,0 +1,18 @@
+[project]
+name = "le-rf-wm"
+version = "0.1.0"
+description = "RF-LeWM: JEPA world model for RF spectral environments"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "torch",
+    "lightning",
+    "einops",
+    "hydra-core",
+    "omegaconf",
+    "h5py",
+    "wandb",
+    "stable-worldmodel[train]",
+    "matplotlib>=3.10.8",
+    "datasets>=4.5.0",
+]

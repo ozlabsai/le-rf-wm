@@ -1,23 +1,10 @@
+# le-rf-wm — RF-LeWM
 
-# LeWorldModel
-### Stable End-to-End Joint-Embedding Predictive Architecture from Pixels
+Fork of [LeWorldModel (LeWM)](https://github.com/lucas-maes/le-wm): a **Joint-Embedding Predictive Architecture** extended with an **RF spectral pipeline**—`SpectrogramViT` encoder, HDF5 trajectory data, and unconditional latent prediction for RF scene dynamics. The original **robotics** path (pixels, actions, MPC) remains in `train.py` / `eval.py`.
 
-[Lucas Maes*](https://x.com/lucasmaes_), [Quentin Le Lidec*](https://quentinll.github.io/), [Damien Scieur](https://scholar.google.com/citations?user=hNscQzgAAAAJ&hl=fr), [Yann LeCun](https://yann.lecun.com/) and [Randall Balestriero](https://randallbalestriero.github.io/)
+Upstream paper: [LeWorldModel: Stable End-to-End Joint-Embedding Predictive Architecture from Pixels](https://arxiv.org/pdf/2603.19312v1) (Maes et al., 2026).
 
-**Abstract:** Joint Embedding Predictive Architectures (JEPAs) offer a compelling framework for learning world models in compact latent spaces, yet existing methods remain fragile, relying on complex multi-term losses, exponential moving averages, pretrained encoders, or auxiliary supervision to avoid representation collapse. In this work, we introduce LeWorldModel (LeWM), the first JEPA that trains stably end-to-end from raw pixels using only two loss terms: a next-embedding prediction loss and a regularizer enforcing Gaussian-distributed latent embeddings. This reduces tunable loss hyperparameters from six to one compared to the only existing end-to-end alternative. With ~15M parameters trainable on a single GPU in a few hours, LeWM plans up to 48× faster than foundation-model-based world models while remaining competitive across diverse 2D and 3D control tasks. Beyond control, we show that LeWM's latent space encodes meaningful physical structure through probing of physical quantities. Surprise evaluation confirms that the model reliably detects physically implausible events.
-
-<p align="center">
-   <b>[ <a href="https://arxiv.org/pdf/2603.19312v1">Paper</a> | <a href="https://drive.google.com/drive/folders/1r31os0d4-rR0mdHc7OlY_e5nh3XT4r4e?usp=sharing">Checkpoints</a> | <a href="https://huggingface.co/collections/quentinll/lewm">Data</a> | <a href="https://le-wm.github.io/">Website</a> ]</b>
-</p>
-
-<br>
-
-<p align="center">
-  <img src="assets/lewm.gif" width="80%">
-</p>
-
-If you find this code useful, please reference it in your paper:
-```
+```bibtex
 @article{maes_lelidec2026lewm,
   title={LeWorldModel: Stable End-to-End Joint-Embedding Predictive Architecture from Pixels},
   author={Maes, Lucas and Le Lidec, Quentin and Scieur, Damien and LeCun, Yann and Balestriero, Randall},
@@ -26,102 +13,71 @@ If you find this code useful, please reference it in your paper:
 }
 ```
 
-## Using the code
-This codebase builds on [stable-worldmodel](https://github.com/galilai-group/stable-worldmodel) for environment management, planning, and evaluation, and [stable-pretraining](https://github.com/galilai-group/stable-pretraining) for training. Together they reduce this repository to its core contribution: the model architecture and training objective.
+## Install
 
-**Installation:**
+Uses [stable-worldmodel](https://github.com/galilai-group/stable-worldmodel) for training utilities and (for robotics) environments/planning.
+
 ```bash
 uv venv --python=3.10
 source .venv/bin/activate
-uv pip install stable-worldmodel[train,env]
+uv pip install -e .
+# Robotics + envs (optional):
+uv pip install "stable-worldmodel[train,env]"
 ```
 
-## Data
+Core deps are listed in `pyproject.toml` (`torch`, `lightning`, `hydra-core`, `h5py`, `einops`, etc.).
 
-Datasets use the HDF5 format for fast loading. Download the data from [HuggingFace](https://huggingface.co/collections/quentinll/lewm) and decompress with:
+## RF data
+
+Spectrogram trajectories are **HDF5** files (train / val / test). Schema, shapes, and splits are documented in [DATASET.md](DATASET.md).
+
+Point the configs at your files:
+
+- `config/train/data/rf.yaml` — `train_path`, `val_path`
+- `config/eval/rf.yaml` — `data.test_path`
+
+Robotics datasets from the upstream project still go under `$STABLEWM_HOME` (default `~/.stable-wm/`); see upstream README / Hugging Face collections for `.h5` layout.
+
+## RF training
 
 ```bash
-tar --zstd -xvf archive.tar.zst
+python train_rf.py
+python train_rf.py trainer.max_epochs=50
 ```
 
-Place the extracted `.h5` files under `$STABLEWM_HOME` (defaults to `~/.stable-wm/`). You can override this path:
+Hydra defaults: `config/train/lewm_rf.yaml`. Set WandB `entity` / `project` under the `wandb:` block there (or override on the CLI).
+
+Serialized model dumps (`*_object.ckpt`) and Lightning weight checkpoints are written under `stable_worldmodel`’s cache root (usually `$STABLEWM_HOME`) with a per-run subdirectory from Hydra (`lewm_rf.yaml` `subdir`, default `${hydra:job.id}`).
+
+## RF evaluation
+
 ```bash
-export STABLEWM_HOME=/path/to/your/storage
+python eval_rf.py policy=lewm_rf
 ```
 
-Dataset names are specified without the `.h5` extension. For example, `config/train/data/pusht.yaml` references `pusht_expert_train`, which resolves to `$STABLEWM_HOME/pusht_expert_train.h5`.
+`policy` is the checkpoint name **relative to `$STABLEWM_HOME`**, without the `_object.ckpt` suffix. Eval reports one-step prediction error, rollout error, and surprise-style metrics (see `eval_rf.py`).
 
-## Training
+## Robotics (upstream)
 
-`jepa.py` contains the PyTorch implementation of LeWM. Training is configured via [Hydra](https://hydra.cc/) config files under `config/train/`.
-
-Before training, set your WandB `entity` and `project` in `config/train/lewm.yaml`:
-```yaml
-wandb:
-  config:
-    entity: your_entity
-    project: your_project
-```
-
-To launch training:
 ```bash
 python train.py data=pusht
-```
-
-Checkpoints are saved to `$STABLEWM_HOME` upon completion.
-
-For baseline scripts, see the stable-worldmodel [scripts](https://github.com/galilai-group/stable-worldmodel/tree/main/scripts/train) folder.
-
-## Planning
-
-Evaluation configs live under `config/eval/`. Set the `policy` field to the checkpoint path **relative to `$STABLEWM_HOME`**, without the `_object.ckpt` suffix:
-
-```bash
-# ✓ correct
 python eval.py --config-name=pusht.yaml policy=pusht/lewm
-
-# ✗ incorrect
-python eval.py --config-name=pusht.yaml policy=pusht/lewm_object.ckpt
 ```
 
-## Pretrained Checkpoints
+Configs: `config/train/lewm.yaml`, `config/eval/`.
 
-Pre-trained checkpoints are available on [Google Drive](https://drive.google.com/drive/folders/1r31os0d4-rR0mdHc7OlY_e5nh3XT4r4e). Download the checkpoint archive and place the extracted files under `$STABLEWM_HOME/`.
+## Code map
 
-<div align="center">
+| Area | Files |
+|------|--------|
+| Shared JEPA | `jepa.py` — `encode`, `encode_rf`, `predict`, `rollout`, `rollout_unconditional` |
+| RF encoder | `encoder.py` — `SpectrogramViT` |
+| RF data | `dataset.py` — `RFSpectralDataset` |
+| Blocks / predictor / SIGReg | `module.py` |
+| RF train / eval entrypoints | `train_rf.py`, `eval_rf.py` |
 
-| Method | two-room | pusht | cube | reacher |
-|:---:|:---:|:---:|:---:|:---:|
-| pldm | ✓ | ✓ | ✓ | ✓ |
-| lejepa | ✓ | ✓ | ✓ | ✓ |
-| ivl | ✓ | ✓ | ✓ | — |
-| iql | ✓ | ✓ | ✓ | — |
-| gcbc | ✓ | ✓ | ✓ | — |
-| dinowm | ✓ | ✓ | — | — |
-| dinowm_noprop | ✓ | ✓ | ✓ | ✓ |
+Design notes for contributors: see [CLAUDE.md](CLAUDE.md).
 
-</div>
+## License
 
-## Loading a checkpoint
-
-Each tar archive contains two files per checkpoint:
-- `<name>_object.ckpt` — a serialized Python object for convenient loading; this is what `eval.py` and the `stable_worldmodel` API use
-- `<name>_weight.ckpt` — a weights-only checkpoint (`state_dict`) for cases where you want to load weights into your own model instance
-
-To load the object checkpoint via the `stable_worldmodel` API:
-
-```python
-import stable_worldmodel as swm
-
-# Load the cost model (for MPC)
-cost = swm.policy.AutoCostModel('pusht/lewm')
-```
-
-This function accepts:
-- `run_name` — checkpoint path **relative to `$STABLEWM_HOME`**, without the `_object.ckpt` suffix
-- `cache_dir` — optional override for the checkpoint root (defaults to `$STABLEWM_HOME`)
-
-The returned module is in `eval` mode with its PyTorch weights accessible via `.state_dict()`.
-
-## Contact & Contributions
-Feel free to open [issues](https://github.com/lucas-maes/le-wm/issues)! For questions or collaborations, please contact `lucas.maes@mila.quebec`
+MIT — see [LICENSE](LICENSE) (upstream copyright).
