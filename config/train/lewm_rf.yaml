@@ -39,9 +39,9 @@ wandb:
 
 encoder:
   in_channels: 2
-  freq_bins: 1024
+  freq_bins: 256
   time_bins: 51
-  patch_freq: 64
+  patch_freq: 16
   patch_time: 3
   hidden_dim: 192
   depth: 12

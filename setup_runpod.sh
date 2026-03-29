@@ -19,13 +19,12 @@ cd "$REPO_DIR"
 echo "=== 3. Setup Python environment ==="
 uv venv --python=3.10
 source .venv/bin/activate
-uv pip install stable-worldmodel[train,env] h5py wandb
+uv pip install stable-worldmodel[train,env] h5py wandb huggingface-hub[hf_xet]
 
 echo "=== 4. Download dataset from HuggingFace ==="
 mkdir -p "$DATA_DIR"
 if [ ! -f "$DATA_DIR/train.h5" ]; then
-    pip install huggingface-hub
-    huggingface-cli download OzLabs/rf-spectral-trajectories \
+    python -m huggingface_hub.commands.huggingface_cli download OzLabs/rf-spectral-trajectories \
         --repo-type dataset \
         --local-dir "$DATA_DIR"
     echo "Dataset downloaded to $DATA_DIR"
