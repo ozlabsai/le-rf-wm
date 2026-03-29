@@ -123,14 +123,14 @@ def run(cfg):
         input_dim=hidden_dim,
         output_dim=embed_dim,
         hidden_dim=2048,
-        norm_fn=torch.nn.BatchNorm1d,
+        norm_fn=torch.nn.LayerNorm,
     )
 
     predictor_proj = MLP(
         input_dim=hidden_dim,
         output_dim=embed_dim,
         hidden_dim=2048,
-        norm_fn=torch.nn.BatchNorm1d,
+        norm_fn=torch.nn.LayerNorm,
     )
 
     world_model = JEPA(
