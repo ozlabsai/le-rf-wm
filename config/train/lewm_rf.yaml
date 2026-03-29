@@ -65,7 +65,11 @@ predictor:
 
 loss:
   sigreg:
-    weight: 0.09
+    weight: 0.30          # used when schedule=constant
+    schedule: linear      # constant | linear
+    weight_start: 0.05    # linear schedule: starting weight at epoch 0
+    weight_end: 0.30      # linear schedule: target weight after warmup
+    warmup_epochs: 5      # linear schedule: epochs to reach weight_end
     kwargs:
       knots: 17
       num_proj: 1024

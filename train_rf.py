@@ -33,12 +33,31 @@ def _patched_on_train_start(self):
 spt.Module.on_train_start = _patched_on_train_start
 
 
+def sigreg_weight_schedule(epoch, cfg_loss):
+    """Compute current SIGReg weight based on epoch and schedule config."""
+    schedule = cfg_loss.sigreg.get("schedule", "constant")
+
+    if schedule == "constant":
+        return cfg_loss.sigreg.weight
+
+    if schedule == "linear":
+        start = cfg_loss.sigreg.weight_start
+        end = cfg_loss.sigreg.weight_end
+        warmup = cfg_loss.sigreg.warmup_epochs
+        if warmup <= 0 or epoch >= warmup:
+            return end
+        return start + (end - start) * (epoch / warmup)
+
+    raise ValueError(f"Unknown sigreg schedule: {schedule}")
+
+
 def rf_forward(self, batch, stage, cfg):
     """Encode RF spectrograms, predict next states, compute losses."""
 
     ctx_len = cfg.wm.history_size
     n_preds = cfg.wm.num_preds
-    lambd = cfg.loss.sigreg.weight
+    epoch = self.current_epoch
+    lambd = sigreg_weight_schedule(epoch, cfg.loss)
 
     output = self.model.encode_rf(batch)
 
@@ -54,6 +73,7 @@ def rf_forward(self, batch, stage, cfg):
     output["loss"] = output["pred_loss"] + lambd * output["sigreg_loss"]
 
     losses_dict = {f"{stage}/{k}": v.detach() for k, v in output.items() if "loss" in k}
+    losses_dict[f"{stage}/sigreg_weight"] = lambd
     self.log_dict(losses_dict, on_step=True, sync_dist=True)
     return output
 
