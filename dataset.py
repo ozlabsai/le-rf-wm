@@ -74,7 +74,8 @@ class RFSpectralDataset(Dataset):
         transform: optional additional transform applied after normalization
     """
 
-    def __init__(self, path, history_size=3, num_preds=1, norm_stats=None, transform=None):
+    def __init__(self, path, history_size=3, num_preds=1, norm_stats=None,
+                 transform=None, preload=True):
         self.path = str(path)
         self.history_size = history_size
         self.num_preds = num_preds
@@ -93,17 +94,29 @@ class RFSpectralDataset(Dataset):
             self._mean = torch.tensor(norm_stats["mean"], dtype=torch.float32).view(1, 2, 1, 1)
             self._std = torch.tensor(norm_stats["std"], dtype=torch.float32).view(1, 2, 1, 1)
 
-        # read metadata without keeping file open
+        # load data
         with h5py.File(self.path, "r") as f:
             self.n_trajectories = f["observations"].shape[0]
             self.traj_len = f["observations"].shape[1]  # 16
+
+            if preload:
+                # load entire array into RAM — (N, 16, F, T, 2) float32
+                # permute to (N, 16, 2, F, T) and apply normalization upfront
+                print(f"Preloading {self.path} into RAM...")
+                raw = torch.from_numpy(f["observations"][()]).float()
+                self._data = raw.permute(0, 1, 4, 2, 3)  # (N, 16, 2, F, T)
+                if self._mean is not None:
+                    self._data = (self._data - self._mean) / self._std
+                print(f"  Loaded {self._data.shape}, {self._data.element_size() * self._data.nelement() / 1e9:.1f} GB")
+            else:
+                self._data = None
 
         self.subs_per_traj = self.traj_len - self.seq_len + 1
         assert self.subs_per_traj > 0, (
             f"traj_len {self.traj_len} too short for seq_len {self.seq_len}"
         )
 
-        # lazy h5py handle (created per-worker in __getitem__)
+        # lazy h5py handle for non-preloaded mode
         self._file = None
 
     def _get_file(self):
@@ -118,15 +131,17 @@ class RFSpectralDataset(Dataset):
         traj_idx = idx // self.subs_per_traj
         step_offset = idx % self.subs_per_traj
 
-        f = self._get_file()
-        obs = f["observations"][traj_idx, step_offset : step_offset + self.seq_len]
-        # obs: (T, 256, 51, 2) float16 -> (T, 2, 256, 51) float32
-        obs = torch.from_numpy(obs).float()
-        obs = obs.permute(0, 3, 1, 2)  # (T, 2, 256, 51)
-
-        # normalize
-        if self._mean is not None:
-            obs = (obs - self._mean) / self._std
+        if self._data is not None:
+            # fast path: slice from RAM, already normalized
+            obs = self._data[traj_idx, step_offset : step_offset + self.seq_len]
+        else:
+            # slow path: read from HDF5
+            f = self._get_file()
+            obs = f["observations"][traj_idx, step_offset : step_offset + self.seq_len]
+            obs = torch.from_numpy(obs).float()
+            obs = obs.permute(0, 3, 1, 2)  # (T, 2, 256, 51)
+            if self._mean is not None:
+                obs = (obs - self._mean) / self._std
 
         sample = {"observations": obs}
 
