@@ -52,7 +52,7 @@ encoder:
 
 wm:
   history_size: 3
-  num_preds: 2
+  num_preds: 4
   embed_dim: 192
 
 predictor:
@@ -66,11 +66,11 @@ predictor:
 loss:
   variance_weight: 1.0    # VICReg-style variance floor on embeddings
   sigreg:
-    weight: 0.10          # used when schedule=constant
+    weight: 0.05          # used when schedule=constant
     schedule: linear      # constant | linear
     weight_start: 0.0     # linear schedule: starting weight at epoch 0
-    weight_end: 0.10      # linear schedule: target weight after warmup
-    warmup_epochs: 10     # linear schedule: epochs to reach weight_end
+    weight_end: 0.05      # linear schedule: target weight after warmup
+    warmup_epochs: 20     # linear schedule: epochs to reach weight_end
     kwargs:
       knots: 17
       num_proj: 1024
