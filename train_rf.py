@@ -11,6 +11,7 @@ import torch
 from lightning.pytorch.loggers import WandbLogger
 from omegaconf import OmegaConf
 
+from einops import rearrange
 from dataset import RFSpectralDataset, compute_norm_stats, save_norm_stats
 from encoder import SpectrogramViT
 from jepa import JEPA
@@ -51,6 +52,15 @@ def sigreg_weight_schedule(epoch, cfg_loss):
     raise ValueError(f"Unknown sigreg schedule: {schedule}")
 
 
+def variance_loss(emb, target_std=1.0):
+    """VICReg-style variance regularizer.
+    Penalizes embedding dimensions whose std across samples falls below target_std.
+    emb: (N, D) — flattened embeddings
+    """
+    std = emb.std(dim=0)  # (D,) std per dimension
+    return torch.relu(target_std - std).mean()
+
+
 def rf_forward(self, batch, stage, cfg):
     """Encode RF spectrograms, predict next states, compute losses."""
 
@@ -58,6 +68,7 @@ def rf_forward(self, batch, stage, cfg):
     n_preds = cfg.wm.num_preds
     epoch = self.current_epoch
     lambd = sigreg_weight_schedule(epoch, cfg.loss)
+    var_weight = cfg.loss.get("variance_weight", 1.0)
 
     output = self.model.encode_rf(batch)
 
@@ -68,10 +79,16 @@ def rf_forward(self, batch, stage, cfg):
     pred_emb = self.model.predict(ctx_emb)          # (B, ctx_len, D)
     pred_emb = pred_emb[:, -n_preds:]               # (B, n_preds, D) — last n_preds outputs
 
-    # LeWM loss
+    # Flatten embeddings across batch and time for variance computation
+    emb_flat = rearrange(emb, "b t d -> (b t) d")
+
+    # LeWM loss + variance regularizer
     output["pred_loss"] = (pred_emb - tgt_emb).pow(2).mean()
     output["sigreg_loss"] = self.sigreg(emb.transpose(0, 1))
-    output["loss"] = output["pred_loss"] + lambd * output["sigreg_loss"]
+    output["var_loss"] = variance_loss(emb_flat)
+    output["loss"] = (output["pred_loss"]
+                      + lambd * output["sigreg_loss"]
+                      + var_weight * output["var_loss"])
 
     losses_dict = {f"{stage}/{k}": v.detach() for k, v in output.items() if "loss" in k}
     losses_dict[f"{stage}/sigreg_weight"] = lambd
