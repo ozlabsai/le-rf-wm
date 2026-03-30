@@ -79,7 +79,11 @@ def rf_forward(self, batch, stage, cfg):
     ctx_emb = emb[:, :ctx_len]                     # (B, ctx_len, D)
     tgt_emb = emb[:, ctx_len:].detach()             # (B, n_preds, D) — stop gradient on targets
     pred_emb = self.model.predict(ctx_emb)          # (B, ctx_len, D)
-    pred_emb = pred_emb[:, -n_preds:]               # (B, n_preds, D) — last n_preds outputs
+
+    # Match prediction and target lengths (predictor outputs ctx_len frames)
+    n_match = min(n_preds, ctx_len)
+    pred_emb = pred_emb[:, -n_match:]               # last n_match predictions
+    tgt_emb = tgt_emb[:, :n_match]                   # first n_match targets
 
     # Flatten embeddings across batch and time for variance computation
     emb_flat = rearrange(emb, "b t d -> (b t) d")
