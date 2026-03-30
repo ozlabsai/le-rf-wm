@@ -64,7 +64,7 @@ def rf_forward(self, batch, stage, cfg):
     emb = output["emb"]  # (B, T, D) where T = ctx_len + n_preds
 
     ctx_emb = emb[:, :ctx_len]                     # (B, ctx_len, D)
-    tgt_emb = emb[:, ctx_len:]                      # (B, n_preds, D) — no overlap with context
+    tgt_emb = emb[:, ctx_len:].detach()             # (B, n_preds, D) — stop gradient on targets
     pred_emb = self.model.predict(ctx_emb)          # (B, ctx_len, D)
     pred_emb = pred_emb[:, -n_preds:]               # (B, n_preds, D) — last n_preds outputs
 
