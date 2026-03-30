@@ -52,7 +52,7 @@ encoder:
 
 wm:
   history_size: 3
-  num_preds: 1
+  num_preds: 2
   embed_dim: 192
 
 predictor:
@@ -65,11 +65,11 @@ predictor:
 
 loss:
   sigreg:
-    weight: 0.30          # used when schedule=constant
+    weight: 0.10          # used when schedule=constant
     schedule: linear      # constant | linear
-    weight_start: 0.05    # linear schedule: starting weight at epoch 0
-    weight_end: 0.30      # linear schedule: target weight after warmup
-    warmup_epochs: 5      # linear schedule: epochs to reach weight_end
+    weight_start: 0.0     # linear schedule: starting weight at epoch 0
+    weight_end: 0.10      # linear schedule: target weight after warmup
+    warmup_epochs: 10     # linear schedule: epochs to reach weight_end
     kwargs:
       knots: 17
       num_proj: 1024
