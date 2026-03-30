@@ -61,11 +61,12 @@ def rf_forward(self, batch, stage, cfg):
 
     output = self.model.encode_rf(batch)
 
-    emb = output["emb"]  # (B, T, D)
+    emb = output["emb"]  # (B, T, D) where T = ctx_len + n_preds
 
-    ctx_emb = emb[:, :ctx_len]
-    tgt_emb = emb[:, n_preds:]  # label
-    pred_emb = self.model.predict(ctx_emb)  # unconditional
+    ctx_emb = emb[:, :ctx_len]                     # (B, ctx_len, D)
+    tgt_emb = emb[:, ctx_len:]                      # (B, n_preds, D) — no overlap with context
+    pred_emb = self.model.predict(ctx_emb)          # (B, ctx_len, D)
+    pred_emb = pred_emb[:, -n_preds:]               # (B, n_preds, D) — last n_preds outputs
 
     # LeWM loss
     output["pred_loss"] = (pred_emb - tgt_emb).pow(2).mean()
