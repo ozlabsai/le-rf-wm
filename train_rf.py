@@ -52,12 +52,14 @@ def sigreg_weight_schedule(epoch, cfg_loss):
     raise ValueError(f"Unknown sigreg schedule: {schedule}")
 
 
-def variance_loss(emb, target_std=1.0):
+def variance_loss(emb, target_std=1.0, eps=1e-4):
     """VICReg-style variance regularizer.
     Penalizes embedding dimensions whose std across samples falls below target_std.
+    Uses sqrt(var + eps) to ensure gradient is finite at collapse.
     emb: (N, D) — flattened embeddings
     """
-    std = emb.std(dim=0)  # (D,) std per dimension
+    var = emb.var(dim=0)          # (D,) variance per dimension
+    std = (var + eps).sqrt()      # finite gradient even when var=0
     return torch.relu(target_std - std).mean()
 
 
@@ -90,8 +92,18 @@ def rf_forward(self, batch, stage, cfg):
                       + lambd * output["sigreg_loss"]
                       + var_weight * output["var_loss"])
 
+    # Embedding std diagnostics
+    with torch.no_grad():
+        dim_std = emb_flat.std(dim=0)
+        output["emb_std_mean"] = dim_std.mean()
+        output["emb_std_min"] = dim_std.min()
+        output["emb_std_max"] = dim_std.max()
+
     losses_dict = {f"{stage}/{k}": v.detach() for k, v in output.items() if "loss" in k}
     losses_dict[f"{stage}/sigreg_weight"] = lambd
+    losses_dict[f"{stage}/emb_std_mean"] = output["emb_std_mean"]
+    losses_dict[f"{stage}/emb_std_min"] = output["emb_std_min"]
+    losses_dict[f"{stage}/emb_std_max"] = output["emb_std_max"]
     self.log_dict(losses_dict, on_step=True, sync_dist=True)
     return output
 
