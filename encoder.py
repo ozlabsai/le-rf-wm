@@ -60,7 +60,7 @@ class SpectrogramViT(nn.Module):
     def forward(self, x):
         """
         x: (B, C, F, T) — e.g. (B, 2, 256, 51)
-        returns: (B, hidden_dim) — CLS token embedding
+        returns: (B, hidden_dim) — mean-pooled patch embedding
         """
         B = x.size(0)
 
@@ -75,16 +75,12 @@ class SpectrogramViT(nn.Module):
         # flatten spatial dims → (B, num_patches, hidden_dim)
         x = rearrange(x, "b f t d -> b (f t) d")
 
-        # prepend CLS token
-        cls = self.cls_token.expand(B, -1, -1) + self.cls_pos
-        x = torch.cat([cls, x], dim=1)
-
         x = self.dropout(x)
 
-        # transformer
+        # transformer (no CLS token — use mean pooling instead)
         for block in self.blocks:
             x = block(x)
         x = self.norm(x)
 
-        # return CLS token
-        return x[:, 0]
+        # mean pool over all patches
+        return x.mean(dim=1)
