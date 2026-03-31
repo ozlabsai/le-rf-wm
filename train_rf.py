@@ -8,6 +8,7 @@ import lightning as pl
 import stable_pretraining as spt
 import stable_worldmodel as swm
 import torch
+import torch.nn.functional as F
 from lightning.pytorch.loggers import WandbLogger
 from omegaconf import OmegaConf
 
@@ -88,8 +89,13 @@ def rf_forward(self, batch, stage, cfg):
     # Flatten embeddings across batch and time for variance computation
     emb_flat = rearrange(emb, "b t d -> (b t) d")
 
+    # L2-normalize before prediction loss — removes shrinkage shortcut,
+    # makes loss about direction not magnitude
+    pred_norm = F.normalize(pred_emb, dim=-1)
+    tgt_norm = F.normalize(tgt_emb, dim=-1)
+
     # LeWM loss + variance regularizer
-    output["pred_loss"] = (pred_emb - tgt_emb).pow(2).mean()
+    output["pred_loss"] = (pred_norm - tgt_norm).pow(2).mean()
     output["sigreg_loss"] = self.sigreg(emb.transpose(0, 1))
     output["var_loss"] = variance_loss(emb_flat)
     output["loss"] = (output["pred_loss"]
