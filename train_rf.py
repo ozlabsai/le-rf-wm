@@ -86,13 +86,17 @@ def rf_forward(self, batch, stage, cfg):
     pred_emb = pred_emb[:, -n_match:]               # last n_match predictions
     tgt_emb = tgt_emb[:, :n_match]                   # first n_match targets
 
+    # Residual prediction: predict change from last context frame
+    anchor = ctx_emb[:, -1:].detach()                # (B, 1, D)
+    tgt_delta = tgt_emb - anchor                     # (B, n_match, D)
+    pred_delta = pred_emb - anchor                   # (B, n_match, D)
+
     # Flatten embeddings across batch and time for variance computation
     emb_flat = rearrange(emb, "b t d -> (b t) d")
 
-    # L2-normalize before prediction loss — removes shrinkage shortcut,
-    # makes loss about direction not magnitude
-    pred_norm = F.normalize(pred_emb, dim=-1)
-    tgt_norm = F.normalize(tgt_emb, dim=-1)
+    # L2-normalize residuals before loss — direction of change, not magnitude
+    pred_norm = F.normalize(pred_delta, dim=-1)
+    tgt_norm = F.normalize(tgt_delta, dim=-1)
 
     # LeWM loss + variance regularizer
     output["pred_loss"] = (pred_norm - tgt_norm).pow(2).mean()
