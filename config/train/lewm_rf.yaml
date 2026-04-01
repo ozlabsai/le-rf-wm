@@ -52,7 +52,7 @@ encoder:
 
 wm:
   history_size: 3
-  num_preds: 4
+  num_preds: 6
   embed_dim: 192
 
 predictor:
