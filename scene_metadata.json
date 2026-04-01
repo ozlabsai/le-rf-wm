@@ -1,0 +1,2402 @@
+{
+  "scene_0001": {
+    "regime": "quiet",
+    "snr_db": 14,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0002": {
+    "regime": "dense",
+    "snr_db": 0,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0003": {
+    "regime": "bursty",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0004": {
+    "regime": "ramp_up",
+    "snr_db": 12,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0005": {
+    "regime": "interference_event",
+    "snr_db": 6,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0006": {
+    "regime": "correlated_alternating",
+    "snr_db": 10,
+    "num_signals": 2,
+    "channel_type": "rician"
+  },
+  "scene_0007": {
+    "regime": "correlated_leader_follower",
+    "snr_db": -6,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0008": {
+    "regime": "random",
+    "snr_db": 30,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0009": {
+    "regime": "quiet",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0010": {
+    "regime": "dense",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0011": {
+    "regime": "bursty",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0012": {
+    "regime": "ramp_up",
+    "snr_db": 18,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0013": {
+    "regime": "interference_event",
+    "snr_db": 28,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0014": {
+    "regime": "correlated_alternating",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0015": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 20,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0016": {
+    "regime": "random",
+    "snr_db": 2,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0017": {
+    "regime": "quiet",
+    "snr_db": 20,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0018": {
+    "regime": "dense",
+    "snr_db": 30,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0019": {
+    "regime": "bursty",
+    "snr_db": -8,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0020": {
+    "regime": "ramp_up",
+    "snr_db": 14,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0021": {
+    "regime": "interference_event",
+    "snr_db": 18,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0022": {
+    "regime": "correlated_alternating",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0023": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 28,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0024": {
+    "regime": "random",
+    "snr_db": 18,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0025": {
+    "regime": "quiet",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0026": {
+    "regime": "dense",
+    "snr_db": -2,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0027": {
+    "regime": "bursty",
+    "snr_db": -8,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0028": {
+    "regime": "ramp_up",
+    "snr_db": 2,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0029": {
+    "regime": "interference_event",
+    "snr_db": 0,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0030": {
+    "regime": "correlated_alternating",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0031": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0032": {
+    "regime": "random",
+    "snr_db": 20,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0033": {
+    "regime": "quiet",
+    "snr_db": 18,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0034": {
+    "regime": "dense",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0035": {
+    "regime": "bursty",
+    "snr_db": 24,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0036": {
+    "regime": "ramp_up",
+    "snr_db": 24,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0037": {
+    "regime": "interference_event",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0038": {
+    "regime": "correlated_alternating",
+    "snr_db": 8,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0039": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0040": {
+    "regime": "random",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0041": {
+    "regime": "quiet",
+    "snr_db": -8,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0042": {
+    "regime": "dense",
+    "snr_db": 30,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0043": {
+    "regime": "bursty",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0044": {
+    "regime": "ramp_up",
+    "snr_db": 8,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0045": {
+    "regime": "interference_event",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0046": {
+    "regime": "correlated_alternating",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0047": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0048": {
+    "regime": "random",
+    "snr_db": 28,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0049": {
+    "regime": "quiet",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0050": {
+    "regime": "dense",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0051": {
+    "regime": "bursty",
+    "snr_db": 28,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0052": {
+    "regime": "ramp_up",
+    "snr_db": -2,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0053": {
+    "regime": "interference_event",
+    "snr_db": 26,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0054": {
+    "regime": "correlated_alternating",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0055": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 8,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0056": {
+    "regime": "random",
+    "snr_db": -8,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0057": {
+    "regime": "quiet",
+    "snr_db": -2,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0058": {
+    "regime": "dense",
+    "snr_db": 30,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0059": {
+    "regime": "bursty",
+    "snr_db": 16,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0060": {
+    "regime": "ramp_up",
+    "snr_db": 30,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0061": {
+    "regime": "interference_event",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0062": {
+    "regime": "correlated_alternating",
+    "snr_db": 20,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0063": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0064": {
+    "regime": "random",
+    "snr_db": 18,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0065": {
+    "regime": "quiet",
+    "snr_db": 30,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0066": {
+    "regime": "dense",
+    "snr_db": 14,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0067": {
+    "regime": "bursty",
+    "snr_db": 14,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0068": {
+    "regime": "ramp_up",
+    "snr_db": 0,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0069": {
+    "regime": "interference_event",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0070": {
+    "regime": "correlated_alternating",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0071": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0072": {
+    "regime": "random",
+    "snr_db": -2,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0073": {
+    "regime": "quiet",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0074": {
+    "regime": "dense",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0075": {
+    "regime": "bursty",
+    "snr_db": 0,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0076": {
+    "regime": "ramp_up",
+    "snr_db": -8,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0077": {
+    "regime": "interference_event",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0078": {
+    "regime": "correlated_alternating",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0079": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 18,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0080": {
+    "regime": "random",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0081": {
+    "regime": "quiet",
+    "snr_db": 26,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0082": {
+    "regime": "dense",
+    "snr_db": -2,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0083": {
+    "regime": "bursty",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0084": {
+    "regime": "ramp_up",
+    "snr_db": 14,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0085": {
+    "regime": "interference_event",
+    "snr_db": -8,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0086": {
+    "regime": "correlated_alternating",
+    "snr_db": 4,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0087": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 12,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0088": {
+    "regime": "random",
+    "snr_db": -8,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0089": {
+    "regime": "quiet",
+    "snr_db": 26,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0090": {
+    "regime": "dense",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0091": {
+    "regime": "bursty",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0092": {
+    "regime": "ramp_up",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0093": {
+    "regime": "interference_event",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0094": {
+    "regime": "correlated_alternating",
+    "snr_db": 18,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0095": {
+    "regime": "correlated_leader_follower",
+    "snr_db": -6,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0096": {
+    "regime": "random",
+    "snr_db": 26,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0097": {
+    "regime": "quiet",
+    "snr_db": 30,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0098": {
+    "regime": "dense",
+    "snr_db": 4,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0099": {
+    "regime": "bursty",
+    "snr_db": 8,
+    "num_signals": 2,
+    "channel_type": "rician"
+  },
+  "scene_0100": {
+    "regime": "ramp_up",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0101": {
+    "regime": "interference_event",
+    "snr_db": 2,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0102": {
+    "regime": "correlated_alternating",
+    "snr_db": 0,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0103": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 16,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0104": {
+    "regime": "random",
+    "snr_db": 28,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0105": {
+    "regime": "quiet",
+    "snr_db": 0,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0106": {
+    "regime": "dense",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0107": {
+    "regime": "bursty",
+    "snr_db": 30,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0108": {
+    "regime": "ramp_up",
+    "snr_db": 28,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0109": {
+    "regime": "interference_event",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0110": {
+    "regime": "correlated_alternating",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0111": {
+    "regime": "correlated_leader_follower",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0112": {
+    "regime": "random",
+    "snr_db": 4,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0113": {
+    "regime": "quiet",
+    "snr_db": 4,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0114": {
+    "regime": "dense",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0115": {
+    "regime": "bursty",
+    "snr_db": 4,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0116": {
+    "regime": "ramp_up",
+    "snr_db": 18,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0117": {
+    "regime": "interference_event",
+    "snr_db": 30,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0118": {
+    "regime": "correlated_alternating",
+    "snr_db": 2,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0119": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 8,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0120": {
+    "regime": "random",
+    "snr_db": -6,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0121": {
+    "regime": "quiet",
+    "snr_db": 30,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0122": {
+    "regime": "dense",
+    "snr_db": 8,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0123": {
+    "regime": "bursty",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0124": {
+    "regime": "ramp_up",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0125": {
+    "regime": "interference_event",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0126": {
+    "regime": "correlated_alternating",
+    "snr_db": 26,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0127": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 26,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0128": {
+    "regime": "random",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0129": {
+    "regime": "quiet",
+    "snr_db": 2,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0130": {
+    "regime": "dense",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0131": {
+    "regime": "bursty",
+    "snr_db": -8,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0132": {
+    "regime": "ramp_up",
+    "snr_db": 18,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0133": {
+    "regime": "interference_event",
+    "snr_db": 2,
+    "num_signals": 2,
+    "channel_type": "rician"
+  },
+  "scene_0134": {
+    "regime": "correlated_alternating",
+    "snr_db": 20,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0135": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0136": {
+    "regime": "random",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0137": {
+    "regime": "quiet",
+    "snr_db": 4,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0138": {
+    "regime": "dense",
+    "snr_db": 28,
+    "num_signals": 2,
+    "channel_type": "rician"
+  },
+  "scene_0139": {
+    "regime": "bursty",
+    "snr_db": 24,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0140": {
+    "regime": "ramp_up",
+    "snr_db": -2,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0141": {
+    "regime": "interference_event",
+    "snr_db": 16,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0142": {
+    "regime": "correlated_alternating",
+    "snr_db": 26,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0143": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0144": {
+    "regime": "random",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0145": {
+    "regime": "quiet",
+    "snr_db": 16,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0146": {
+    "regime": "dense",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0147": {
+    "regime": "bursty",
+    "snr_db": 12,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0148": {
+    "regime": "ramp_up",
+    "snr_db": -8,
+    "num_signals": 2,
+    "channel_type": "rician"
+  },
+  "scene_0149": {
+    "regime": "interference_event",
+    "snr_db": 24,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0150": {
+    "regime": "correlated_alternating",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0151": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 18,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0152": {
+    "regime": "random",
+    "snr_db": 20,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0153": {
+    "regime": "quiet",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0154": {
+    "regime": "dense",
+    "snr_db": 4,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0155": {
+    "regime": "bursty",
+    "snr_db": -2,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0156": {
+    "regime": "ramp_up",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0157": {
+    "regime": "interference_event",
+    "snr_db": -4,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0158": {
+    "regime": "correlated_alternating",
+    "snr_db": 24,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0159": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 26,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0160": {
+    "regime": "random",
+    "snr_db": 18,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0161": {
+    "regime": "quiet",
+    "snr_db": 12,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0162": {
+    "regime": "dense",
+    "snr_db": 18,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0163": {
+    "regime": "bursty",
+    "snr_db": 26,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0164": {
+    "regime": "ramp_up",
+    "snr_db": 30,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0165": {
+    "regime": "interference_event",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0166": {
+    "regime": "correlated_alternating",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0167": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0168": {
+    "regime": "random",
+    "snr_db": 14,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0169": {
+    "regime": "quiet",
+    "snr_db": 26,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0170": {
+    "regime": "dense",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0171": {
+    "regime": "bursty",
+    "snr_db": -2,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0172": {
+    "regime": "ramp_up",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0173": {
+    "regime": "interference_event",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0174": {
+    "regime": "correlated_alternating",
+    "snr_db": 0,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0175": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 4,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0176": {
+    "regime": "random",
+    "snr_db": 18,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0177": {
+    "regime": "quiet",
+    "snr_db": 20,
+    "num_signals": 2,
+    "channel_type": "rician"
+  },
+  "scene_0178": {
+    "regime": "dense",
+    "snr_db": 10,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0179": {
+    "regime": "bursty",
+    "snr_db": 20,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0180": {
+    "regime": "ramp_up",
+    "snr_db": 4,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0181": {
+    "regime": "interference_event",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0182": {
+    "regime": "correlated_alternating",
+    "snr_db": 20,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0183": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0184": {
+    "regime": "random",
+    "snr_db": 28,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0185": {
+    "regime": "quiet",
+    "snr_db": 20,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0186": {
+    "regime": "dense",
+    "snr_db": 26,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0187": {
+    "regime": "bursty",
+    "snr_db": 14,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0188": {
+    "regime": "ramp_up",
+    "snr_db": -6,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0189": {
+    "regime": "interference_event",
+    "snr_db": 26,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0190": {
+    "regime": "correlated_alternating",
+    "snr_db": 0,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0191": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 14,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0192": {
+    "regime": "random",
+    "snr_db": 26,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0193": {
+    "regime": "quiet",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0194": {
+    "regime": "dense",
+    "snr_db": 8,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0195": {
+    "regime": "bursty",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0196": {
+    "regime": "ramp_up",
+    "snr_db": 14,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0197": {
+    "regime": "interference_event",
+    "snr_db": 2,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0198": {
+    "regime": "correlated_alternating",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0199": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 20,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0200": {
+    "regime": "random",
+    "snr_db": -8,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0201": {
+    "regime": "quiet",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0202": {
+    "regime": "dense",
+    "snr_db": 18,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0203": {
+    "regime": "bursty",
+    "snr_db": 30,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0204": {
+    "regime": "ramp_up",
+    "snr_db": 26,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0205": {
+    "regime": "interference_event",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0206": {
+    "regime": "correlated_alternating",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0207": {
+    "regime": "correlated_leader_follower",
+    "snr_db": -4,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0208": {
+    "regime": "random",
+    "snr_db": 24,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0209": {
+    "regime": "quiet",
+    "snr_db": 10,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0210": {
+    "regime": "dense",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0211": {
+    "regime": "bursty",
+    "snr_db": 0,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0212": {
+    "regime": "ramp_up",
+    "snr_db": 8,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0213": {
+    "regime": "interference_event",
+    "snr_db": 4,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0214": {
+    "regime": "correlated_alternating",
+    "snr_db": 18,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0215": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 30,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0216": {
+    "regime": "random",
+    "snr_db": 8,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0217": {
+    "regime": "quiet",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0218": {
+    "regime": "dense",
+    "snr_db": -2,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0219": {
+    "regime": "bursty",
+    "snr_db": 4,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0220": {
+    "regime": "ramp_up",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0221": {
+    "regime": "interference_event",
+    "snr_db": 18,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0222": {
+    "regime": "correlated_alternating",
+    "snr_db": 8,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0223": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0224": {
+    "regime": "random",
+    "snr_db": 4,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0225": {
+    "regime": "quiet",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0226": {
+    "regime": "dense",
+    "snr_db": -6,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0227": {
+    "regime": "bursty",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0228": {
+    "regime": "ramp_up",
+    "snr_db": 20,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0229": {
+    "regime": "interference_event",
+    "snr_db": 8,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0230": {
+    "regime": "correlated_alternating",
+    "snr_db": -8,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0231": {
+    "regime": "correlated_leader_follower",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0232": {
+    "regime": "random",
+    "snr_db": 12,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0233": {
+    "regime": "quiet",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0234": {
+    "regime": "dense",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0235": {
+    "regime": "bursty",
+    "snr_db": 18,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0236": {
+    "regime": "ramp_up",
+    "snr_db": 8,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0237": {
+    "regime": "interference_event",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0238": {
+    "regime": "correlated_alternating",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0239": {
+    "regime": "correlated_leader_follower",
+    "snr_db": -6,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0240": {
+    "regime": "random",
+    "snr_db": 26,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0241": {
+    "regime": "quiet",
+    "snr_db": 6,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0242": {
+    "regime": "dense",
+    "snr_db": 30,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0243": {
+    "regime": "bursty",
+    "snr_db": 20,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0244": {
+    "regime": "ramp_up",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0245": {
+    "regime": "interference_event",
+    "snr_db": 0,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0246": {
+    "regime": "correlated_alternating",
+    "snr_db": -8,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0247": {
+    "regime": "correlated_leader_follower",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0248": {
+    "regime": "random",
+    "snr_db": 8,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0249": {
+    "regime": "quiet",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0250": {
+    "regime": "dense",
+    "snr_db": -2,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0251": {
+    "regime": "bursty",
+    "snr_db": 22,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0252": {
+    "regime": "ramp_up",
+    "snr_db": 30,
+    "num_signals": 2,
+    "channel_type": "rician"
+  },
+  "scene_0253": {
+    "regime": "interference_event",
+    "snr_db": 20,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0254": {
+    "regime": "correlated_alternating",
+    "snr_db": 14,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0255": {
+    "regime": "correlated_leader_follower",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0256": {
+    "regime": "random",
+    "snr_db": 0,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0257": {
+    "regime": "quiet",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0258": {
+    "regime": "dense",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0259": {
+    "regime": "bursty",
+    "snr_db": 0,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0260": {
+    "regime": "ramp_up",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0261": {
+    "regime": "interference_event",
+    "snr_db": 18,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0262": {
+    "regime": "correlated_alternating",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0263": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0264": {
+    "regime": "random",
+    "snr_db": 2,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0265": {
+    "regime": "quiet",
+    "snr_db": -6,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0266": {
+    "regime": "dense",
+    "snr_db": 2,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0267": {
+    "regime": "bursty",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0268": {
+    "regime": "ramp_up",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0269": {
+    "regime": "interference_event",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0270": {
+    "regime": "correlated_alternating",
+    "snr_db": 4,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0271": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 12,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0272": {
+    "regime": "random",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0273": {
+    "regime": "quiet",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0274": {
+    "regime": "dense",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0275": {
+    "regime": "bursty",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0276": {
+    "regime": "ramp_up",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0277": {
+    "regime": "interference_event",
+    "snr_db": 4,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0278": {
+    "regime": "correlated_alternating",
+    "snr_db": 20,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0279": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0280": {
+    "regime": "random",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0281": {
+    "regime": "quiet",
+    "snr_db": -4,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0282": {
+    "regime": "dense",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0283": {
+    "regime": "bursty",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0284": {
+    "regime": "ramp_up",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0285": {
+    "regime": "interference_event",
+    "snr_db": -6,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0286": {
+    "regime": "correlated_alternating",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0287": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 26,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0288": {
+    "regime": "random",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0289": {
+    "regime": "quiet",
+    "snr_db": 20,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0290": {
+    "regime": "dense",
+    "snr_db": 24,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0291": {
+    "regime": "bursty",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0292": {
+    "regime": "ramp_up",
+    "snr_db": 2,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0293": {
+    "regime": "interference_event",
+    "snr_db": 4,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0294": {
+    "regime": "correlated_alternating",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0295": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 14,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0296": {
+    "regime": "random",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0297": {
+    "regime": "quiet",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0298": {
+    "regime": "dense",
+    "snr_db": 14,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0299": {
+    "regime": "bursty",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0300": {
+    "regime": "ramp_up",
+    "snr_db": 2,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0301": {
+    "regime": "interference_event",
+    "snr_db": 28,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0302": {
+    "regime": "correlated_alternating",
+    "snr_db": 16,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0303": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 30,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0304": {
+    "regime": "random",
+    "snr_db": 26,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0305": {
+    "regime": "quiet",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0306": {
+    "regime": "dense",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0307": {
+    "regime": "bursty",
+    "snr_db": 18,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0308": {
+    "regime": "ramp_up",
+    "snr_db": 14,
+    "num_signals": 2,
+    "channel_type": "rician"
+  },
+  "scene_0309": {
+    "regime": "interference_event",
+    "snr_db": -8,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0310": {
+    "regime": "correlated_alternating",
+    "snr_db": 28,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0311": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 8,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0312": {
+    "regime": "random",
+    "snr_db": 0,
+    "num_signals": 2,
+    "channel_type": "rician"
+  },
+  "scene_0313": {
+    "regime": "quiet",
+    "snr_db": 8,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0314": {
+    "regime": "dense",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0315": {
+    "regime": "bursty",
+    "snr_db": 24,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0316": {
+    "regime": "ramp_up",
+    "snr_db": 4,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0317": {
+    "regime": "interference_event",
+    "snr_db": 0,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0318": {
+    "regime": "correlated_alternating",
+    "snr_db": 14,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0319": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 30,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0320": {
+    "regime": "random",
+    "snr_db": 2,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0321": {
+    "regime": "quiet",
+    "snr_db": 4,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0322": {
+    "regime": "dense",
+    "snr_db": -8,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0323": {
+    "regime": "bursty",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0324": {
+    "regime": "ramp_up",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0325": {
+    "regime": "interference_event",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0326": {
+    "regime": "correlated_alternating",
+    "snr_db": 30,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0327": {
+    "regime": "correlated_leader_follower",
+    "snr_db": -2,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0328": {
+    "regime": "random",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0329": {
+    "regime": "quiet",
+    "snr_db": 8,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0330": {
+    "regime": "dense",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0331": {
+    "regime": "bursty",
+    "snr_db": -8,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0332": {
+    "regime": "ramp_up",
+    "snr_db": 14,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0333": {
+    "regime": "interference_event",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0334": {
+    "regime": "correlated_alternating",
+    "snr_db": 18,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0335": {
+    "regime": "correlated_leader_follower",
+    "snr_db": -8,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0336": {
+    "regime": "random",
+    "snr_db": 26,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0337": {
+    "regime": "quiet",
+    "snr_db": 2,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0338": {
+    "regime": "dense",
+    "snr_db": 14,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0339": {
+    "regime": "bursty",
+    "snr_db": -2,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0340": {
+    "regime": "ramp_up",
+    "snr_db": 0,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0341": {
+    "regime": "interference_event",
+    "snr_db": 4,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0342": {
+    "regime": "correlated_alternating",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0343": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 6,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0344": {
+    "regime": "random",
+    "snr_db": -8,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0345": {
+    "regime": "quiet",
+    "snr_db": 26,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0346": {
+    "regime": "dense",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0347": {
+    "regime": "bursty",
+    "snr_db": -8,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0348": {
+    "regime": "ramp_up",
+    "snr_db": 30,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0349": {
+    "regime": "interference_event",
+    "snr_db": 18,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0350": {
+    "regime": "correlated_alternating",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0351": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0352": {
+    "regime": "random",
+    "snr_db": 0,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0353": {
+    "regime": "quiet",
+    "snr_db": -8,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0354": {
+    "regime": "dense",
+    "snr_db": 24,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0355": {
+    "regime": "bursty",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0356": {
+    "regime": "ramp_up",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0357": {
+    "regime": "interference_event",
+    "snr_db": 18,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0358": {
+    "regime": "correlated_alternating",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0359": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0360": {
+    "regime": "random",
+    "snr_db": -6,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0361": {
+    "regime": "quiet",
+    "snr_db": 20,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0362": {
+    "regime": "dense",
+    "snr_db": 28,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0363": {
+    "regime": "bursty",
+    "snr_db": 20,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0364": {
+    "regime": "ramp_up",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0365": {
+    "regime": "interference_event",
+    "snr_db": 24,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0366": {
+    "regime": "correlated_alternating",
+    "snr_db": 30,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0367": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 14,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0368": {
+    "regime": "random",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0369": {
+    "regime": "quiet",
+    "snr_db": 10,
+    "num_signals": 2,
+    "channel_type": "rayleigh"
+  },
+  "scene_0370": {
+    "regime": "dense",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0371": {
+    "regime": "bursty",
+    "snr_db": -4,
+    "num_signals": 2,
+    "channel_type": "rician"
+  },
+  "scene_0372": {
+    "regime": "ramp_up",
+    "snr_db": 4,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0373": {
+    "regime": "interference_event",
+    "snr_db": 30,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0374": {
+    "regime": "correlated_alternating",
+    "snr_db": 12,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0375": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0376": {
+    "regime": "random",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0377": {
+    "regime": "quiet",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0378": {
+    "regime": "dense",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0379": {
+    "regime": "bursty",
+    "snr_db": 28,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0380": {
+    "regime": "ramp_up",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0381": {
+    "regime": "interference_event",
+    "snr_db": 22,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0382": {
+    "regime": "correlated_alternating",
+    "snr_db": 30,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0383": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 14,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0384": {
+    "regime": "random",
+    "snr_db": 20,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0385": {
+    "regime": "quiet",
+    "snr_db": -4,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0386": {
+    "regime": "dense",
+    "snr_db": -4,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0387": {
+    "regime": "bursty",
+    "snr_db": 20,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0388": {
+    "regime": "ramp_up",
+    "snr_db": 16,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0389": {
+    "regime": "interference_event",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0390": {
+    "regime": "correlated_alternating",
+    "snr_db": 20,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0391": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 0,
+    "num_signals": 4,
+    "channel_type": "rician"
+  },
+  "scene_0392": {
+    "regime": "random",
+    "snr_db": 6,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0393": {
+    "regime": "quiet",
+    "snr_db": 28,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0394": {
+    "regime": "dense",
+    "snr_db": 20,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0395": {
+    "regime": "bursty",
+    "snr_db": 12,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0396": {
+    "regime": "ramp_up",
+    "snr_db": 10,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0397": {
+    "regime": "interference_event",
+    "snr_db": 4,
+    "num_signals": 3,
+    "channel_type": "rician"
+  },
+  "scene_0398": {
+    "regime": "correlated_alternating",
+    "snr_db": 6,
+    "num_signals": 4,
+    "channel_type": "rayleigh"
+  },
+  "scene_0399": {
+    "regime": "correlated_leader_follower",
+    "snr_db": 0,
+    "num_signals": 3,
+    "channel_type": "rayleigh"
+  },
+  "scene_0400": {
+    "regime": "random",
+    "snr_db": 30,
+    "num_signals": 3,
+    "channel_type": "rician"
+  }
+}
