@@ -67,6 +67,8 @@ def run(data_path, model_policy):
     per_sample_cos_model = []
     per_sample_cos_copy = []
     per_sample_cos_mean = []
+    per_sample_cos_delta_model = []
+    per_sample_cos_delta_mean = []
 
     # Track which source each sample belongs to
     sample_sources = []
@@ -129,13 +131,32 @@ def run(data_path, model_policy):
             per_sample_mse_mean.append(
                 (pred_mean - target_one).pow(2).mean(dim=-1).cpu())
 
-            # Cosine similarity per sample
+            # Cosine similarity per sample (absolute embeddings)
             per_sample_cos_model.append(
                 F.cosine_similarity(pred_model, target_one, dim=-1).cpu())
             per_sample_cos_copy.append(
                 F.cosine_similarity(pred_copy, target_one, dim=-1).cpu())
             per_sample_cos_mean.append(
                 F.cosine_similarity(pred_mean, target_one, dim=-1).cpu())
+
+            # Residual cosine similarity (direction of change — matches training objective)
+            anchor = ctx[:, -1]  # last context frame
+            tgt_delta = target_one - anchor
+            pred_delta_model = pred_model - anchor
+            pred_delta_copy = pred_copy - anchor  # = zero vector (copy predicts no change)
+            pred_delta_mean = pred_mean - anchor
+
+            # Avoid NaN when delta is zero
+            delta_norm = tgt_delta.norm(dim=-1, keepdim=True)
+            valid = (delta_norm.squeeze() > 1e-6)
+
+            if valid.any():
+                cos_delta_model = F.cosine_similarity(
+                    pred_delta_model[valid], tgt_delta[valid], dim=-1)
+                cos_delta_mean = F.cosine_similarity(
+                    pred_delta_mean[valid], tgt_delta[valid], dim=-1)
+                per_sample_cos_delta_model.append(cos_delta_model.cpu())
+                per_sample_cos_delta_mean.append(cos_delta_mean.cpu())
 
     elapsed = time.time() - start
 
@@ -180,6 +201,23 @@ def run(data_path, model_policy):
     print(f"")
     print(f"  If model has higher cosine sim than baselines despite worse MSE,")
     print(f"  the model predicts the right direction but wrong scale.")
+
+    # --- Section 2b: Residual cosine similarity (matches training objective) ---
+    print(f"\n--- 2b. Residual Cosine Similarity (direction of change) ---")
+    if per_sample_cos_delta_model:
+        cos_delta_model_all = torch.cat(per_sample_cos_delta_model)
+        cos_delta_mean_all = torch.cat(per_sample_cos_delta_mean)
+        print(f"  {'Method':<20s} {'Delta CosSim':>12s}")
+        print(f"  {'-'*34}")
+        print(f"  {'RF-LeWM':<20s} {cos_delta_model_all.mean():.4f}")
+        print(f"  {'Mean-context':<20s} {cos_delta_mean_all.mean():.4f}")
+        print(f"  {'Copy-last':<20s} {'0.0000':>12s}  (predicts zero change)")
+        print(f"")
+        print(f"  This measures cosine similarity between predicted and actual")
+        print(f"  temporal CHANGE (delta), which is what the model was trained on.")
+        print(f"  Higher = better directional prediction of dynamics.")
+    else:
+        print(f"  No valid deltas found (all targets identical to anchor)")
 
     # --- Section 3: Per-regime breakdown ---
     print(f"\n--- 3. Per-Regime Breakdown (one-step MSE) ---")
