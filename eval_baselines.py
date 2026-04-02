@@ -79,12 +79,37 @@ def run(data_path, model_policy):
     def zero_pred(ctx):
         return torch.zeros_like(ctx[:, 0])  # predict zero
 
+    def last_delta(ctx):
+        # Constant velocity: z + (z - z_prev) = 2*z_last - z_prev
+        return 2 * ctx[:, -1] - ctx[:, -2]
+
+    def linear_extrap(ctx):
+        # Fit line through 3 points, extrapolate one step
+        # z(t+1) = z(t) + avg_velocity
+        # avg_velocity = (z[2] - z[0]) / 2
+        return ctx[:, -1] + (ctx[:, -1] - ctx[:, 0]) / (ctx.size(1) - 1)
+
+    def exp_smooth(ctx, alpha=0.5):
+        # Exponential smoothing: heavier weight on recent frames
+        # s = alpha*z[-1] + alpha*(1-alpha)*z[-2] + ...
+        # Predict next = s + alpha*(z[-1] - s) = extrapolate from smoothed
+        T = ctx.size(1)
+        weights = torch.tensor([alpha * (1 - alpha) ** (T - 1 - i) for i in range(T)],
+                               device=ctx.device, dtype=ctx.dtype)
+        weights = weights / weights.sum()
+        smoothed = (ctx * weights.view(1, T, 1)).sum(dim=1)
+        # Extrapolate: next = smoothed + (z_last - smoothed)
+        return smoothed + (ctx[:, -1] - smoothed)
+
     def model_pred(ctx):
         return model.predict(ctx)[:, -1]  # trained model, last output
 
     baselines = {
         "RF-LeWM (trained)": model_pred,
         "Copy-last": copy_last,
+        "Last-delta (velocity)": last_delta,
+        "Linear extrapolation": linear_extrap,
+        "Exp. smoothing": exp_smooth,
         "Mean-context": mean_ctx,
         "Zero": zero_pred,
     }
