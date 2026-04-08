@@ -31,16 +31,17 @@ def cache_split(name, model, norm_mean, norm_std):
     print(f"  {name}: {N} trajectories")
 
     all_embs = []
+    device = next(model.parameters()).device
     with torch.no_grad():
         for start in range(0, N, BATCH):
             end = min(start + BATCH, N)
-            batch = obs[start:end]  # [B, 16, 2, 256, 51]
+            batch = obs[start:end].to(device)  # [B, 16, 2, 256, 51]
             B, T = batch.shape[:2]
             flat = rearrange(batch, "b t ... -> (b t) ...")
             emb = model.encoder(flat)
             emb = model.projector(emb)  # [B*T, 192]
             emb = rearrange(emb, "(b t) d -> b t d", b=B)
-            all_embs.append(emb.numpy())
+            all_embs.append(emb.cpu().numpy())
             if (start // BATCH) % 10 == 0:
                 norms = emb.norm(dim=-1)
                 print(f"    {end}/{N} norm: mean={norms.mean():.2f} std={norms.std():.2f}")
@@ -55,13 +56,15 @@ if __name__ == "__main__":
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     print("=== Stage 2: Caching embeddings ===")
 
-    print("Loading model...")
-    model = torch.load(CHECKPOINT, map_location="cpu", weights_only=False)
+    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"Loading model on {DEVICE}...")
+    model = torch.load(CHECKPOINT, map_location=DEVICE, weights_only=False)
+    model.to(DEVICE)
     model.requires_grad_(False)
 
     stats = load_norm_stats(NORM_STATS)
-    norm_mean = torch.tensor(stats["mean"], dtype=torch.float32).view(1, 1, 2, 1, 1)
-    norm_std = torch.tensor(stats["std"], dtype=torch.float32).view(1, 1, 2, 1, 1)
+    norm_mean = torch.tensor(stats["mean"], dtype=torch.float32).view(1, 1, 2, 1, 1).to(DEVICE)
+    norm_std = torch.tensor(stats["std"], dtype=torch.float32).view(1, 1, 2, 1, 1).to(DEVICE)
 
     for split in ["train", "val", "test"]:
         cache_split(split, model, norm_mean, norm_std)
