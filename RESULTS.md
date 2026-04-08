@@ -161,7 +161,7 @@ A series of training runs that all converged to degenerate solutions. Each failu
 - **Surprise detection:** Only detects noise burst (1.66×, 80.7% detection). Blind to signal injection, dropout, temporal reversal (all ~1.00×).
 - **Checkpoint:** `OzLabs/RF-LeWM-v0` on HuggingFace
 
-### Phase 6: Harder Prediction Horizon (Apr 1–2)
+### Phase 6: Harder Prediction Horizon (Apr 1–8)
 
 #### Run 11: num_preds=6
 - **Config:** Same as Run 10 but num_preds=6 (seq_len=9, predict 3–5 steps ahead)
@@ -171,7 +171,54 @@ A series of training runs that all converged to degenerate solutions. Each failu
   - val/sigreg: 10.9
   - val/emb_std_mean: 0.96
 - **wandb:** `guy-na8/lewm-rf/runs/ppbeyl3z`
-- **Baseline evaluation:** Pending (checkpoint saved to `/workspace/data/lewm_rf_epoch_99_numpreds6_object.ckpt`)
+- **Baseline evaluation:**
+
+| Method | 1-step MSE | 12-step MSE | vs Copy-last | CosSim |
+|--------|-----------|------------|-------------|--------|
+| RF-LeWM | 1.469 | 1.727 | +30.6% | 0.068 |
+| Copy-last | 2.115 | 2.186 | baseline | 0.087 |
+| Last-delta (velocity) | 6.305 | 331.9 | -198.1% | — |
+| Linear extrapolation | 3.697 | 119.0 | -74.8% | — |
+| Exp. smoothing | 2.115 | 2.186 | +0.0% | — |
+| Mean-context | 1.441 | 1.541 | +31.9% | 0.106 |
+| Zero | 1.140 | 1.144 | +46.1% | N/A |
+
+- **Residual cosine similarity (direction of change):**
+
+| Method | Delta CosSim |
+|--------|-------------|
+| RF-LeWM | **0.577** |
+| Mean-context | 0.555 |
+| Copy-last | 0.000 |
+
+- **Regime analysis:** Beats copy-last on MSE in **60/60 test scenes** (vs 58/60 for num_preds=4).
+  - MSE improvement: +26.5% (dense) to +33.0% (alternating)
+  - Rollout degradation smoother: 1.06× (alternating) to 1.30× (dense)
+  - Cosine sim lower than copy-last on 6/8 regimes (model loses on absolute direction)
+  - Model wins on bursty (+0.021) and random (+0.007) only
+- **Surprise detection:** Weaker than num_preds=4.
+  - Noise burst: 1.16× (70.3% detection) — down from 1.66× (80.7%) with num_preds=4
+  - Signal injection/dropout/reversal: ~1.00× (no detection)
+- **Key findings:**
+  - Velocity and linear extrapolation explode on rollout (embedding dynamics are nonlinear)
+  - Residual delta cosine (0.577) is the first metric showing the model genuinely predicts direction of temporal change better than baselines
+  - num_preds=6 is **worse** than num_preds=4 on most metrics — harder horizon didn't improve dynamics
+  - The model became more conservative (smoother rollouts, less MSE improvement, weaker surprise)
+
+#### num_preds=4 vs num_preds=6 Summary
+
+| Metric | preds=4 | preds=6 | Winner |
+|--------|---------|---------|--------|
+| MSE vs copy-last | **+42.6%** | +30.6% | preds=4 |
+| Absolute CosSim | **0.076** | 0.068 | preds=4 |
+| Model > Copy CosSim? | **Yes** | No | preds=4 |
+| Scenes beating copy | 58/60 | **60/60** | preds=6 |
+| Noise burst surprise | **1.66×** | 1.16× | preds=4 |
+| Rollout smoothness | 1.03–1.61× | **1.06–1.30×** | preds=6 |
+| Train/val ratio | **1.24×** | 1.47× | preds=4 |
+| Residual delta CosSim | not measured | **0.577** | — |
+
+**Conclusion:** num_preds=4 remains the better configuration. Pushing the prediction horizon to 6 made the model more conservative without improving dynamics learning. The residual delta cosine metric (0.577) is valuable and should be measured for num_preds=4 retroactively.
 
 ---
 
