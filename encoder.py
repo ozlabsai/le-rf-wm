@@ -57,10 +57,11 @@ class SpectrogramViT(nn.Module):
         self.norm = nn.LayerNorm(hidden_dim)
         self.dropout = nn.Dropout(dropout)
 
-    def forward(self, x):
+    def forward(self, x, return_patch_norms=False):
         """
         x: (B, C, F, T) — e.g. (B, 2, 256, 51)
         returns: (B, hidden_dim) — mean-pooled patch embedding
+                 if return_patch_norms: also returns (B, n_freq, n_time) patch norm heatmap
         """
         B = x.size(0)
 
@@ -83,4 +84,13 @@ class SpectrogramViT(nn.Module):
         x = self.norm(x)
 
         # mean pool over all patches
-        return x.mean(dim=1)
+        pooled = x.mean(dim=1)
+
+        if return_patch_norms:
+            # per-patch L2 norm → (B, n_freq, n_time) heatmap
+            patch_norms = x.norm(dim=-1)  # (B, num_patches)
+            patch_norms = rearrange(patch_norms, "b (f t) -> b f t",
+                                    f=self.n_freq, t=self.n_time)
+            return pooled, patch_norms
+
+        return pooled
