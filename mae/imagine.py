@@ -54,7 +54,7 @@ class RFWorldModelImagination:
 
         # Load bridge
         print(f"Loading bridge from {bridge_checkpoint}...")
-        self.bridge = LatentBridge(wm_dim=192, mae_dim=256, num_patches=272).to(self.device)
+        self.bridge = LatentBridge(wm_dim=192, mae_dim=384, num_patches=272).to(self.device)
         self.bridge.load_state_dict(torch.load(bridge_checkpoint, map_location=self.device, weights_only=True))
         self.bridge.requires_grad_(False)
 

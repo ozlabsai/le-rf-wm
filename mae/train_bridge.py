@@ -1,6 +1,6 @@
 """Stage 3: Train the projection bridge from world model embeddings to MAE latent space.
 
-Maps WM embedding [B, 192] -> MAE patch tokens [B, 272, 256], enabling pixel-space
+Maps WM embedding [B, 192] -> MAE patch tokens [B, 272, 384], enabling pixel-space
 visualization of world model predictions.
 
 Usage:
@@ -32,10 +32,10 @@ class LatentBridge(nn.Module):
     """Projects world model embedding to MAE patch token sequence.
 
     Input:  [B, 192]  -- world model mean-pooled embedding
-    Output: [B, 272, 256] -- predicted MAE encoder patch tokens
+    Output: [B, 272, 384] -- predicted MAE encoder patch tokens
     """
 
-    def __init__(self, wm_dim=192, mae_dim=256, num_patches=272):
+    def __init__(self, wm_dim=192, mae_dim=384, num_patches=272):
         super().__init__()
         self.num_patches = num_patches
         self.mae_dim = mae_dim
@@ -177,7 +177,7 @@ def train(args):
     )
 
     # Bridge
-    bridge = LatentBridge(wm_dim=192, mae_dim=256, num_patches=272).to(device)
+    bridge = LatentBridge(wm_dim=192, mae_dim=384, num_patches=272).to(device)
     n_params = sum(p.numel() for p in bridge.parameters())
     print(f"Bridge parameters: {n_params:,} ({n_params/1e6:.1f}M)")
 

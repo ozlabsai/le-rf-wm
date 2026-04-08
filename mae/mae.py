@@ -188,7 +188,7 @@ class SpectrogramMAEEncoder(nn.Module):
 class SpectrogramMAEDecoder(nn.Module):
     """Decodes patch token sequence back to spectrogram pixels.
 
-    Input: (B, 272, 256) full or masked+unmasked token sequence
+    Input: (B, 272, encoder_dim) full or masked+unmasked token sequence
     Output: (B, 256, 51) reconstructed log-magnitude spectrogram
     """
 
@@ -332,7 +332,7 @@ class SpectrogramMAE(nn.Module):
             mask_ratio: fraction of patches to mask
 
         Returns:
-            loss: MSE loss on masked patches only
+            loss: MSE loss on ALL patches (masked weighted 1.0, visible weighted 0.5)
             pred_pixels: (B, num_patches, 48) per-patch predictions
             masked_indices: (B, num_masked) which patches were masked
         """
@@ -355,11 +355,17 @@ class SpectrogramMAE(nn.Module):
         # Decode full sequence
         pred_pixels, recon = self.decoder(visible_tokens, visible_indices)
 
-        # Loss on masked patches only
-        masked_idx_expanded = masked_indices.unsqueeze(-1).expand(-1, -1, gt_pixels.shape[-1])
-        masked_pred = pred_pixels.gather(1, masked_idx_expanded)
-        masked_gt = gt_pixels.gather(1, masked_idx_expanded)
-        loss = nn.functional.mse_loss(masked_pred, masked_gt)
+        # Weighted loss: all patches, masked patches weighted higher
+        # This trains the decoder to reconstruct well from any input,
+        # including the all-visible case used by reconstruct()
+        all_loss = nn.functional.mse_loss(pred_pixels, gt_pixels, reduction="none")  # (B, 272, 48)
+
+        # Build weight mask: 1.0 for masked patches, 0.5 for visible
+        weight = torch.full((B, self.num_patches), 0.5, device=device)
+        weight.scatter_(1, masked_indices, 1.0)
+        weight = weight.unsqueeze(-1)  # (B, 272, 1)
+
+        loss = (all_loss * weight).sum() / (weight.sum() * gt_pixels.shape[-1])
 
         return loss, pred_pixels, masked_indices
 
@@ -369,7 +375,7 @@ class SpectrogramMAE(nn.Module):
         Args:
             x: (B, 1, 256, 51)
         Returns:
-            tokens: (B, 272, 256) patch token sequence
+            tokens: (B, 272, encoder_dim) patch token sequence
         """
         return self.encoder(x, mask_indices=None)
 
@@ -377,7 +383,7 @@ class SpectrogramMAE(nn.Module):
         """Decoder only, from full token sequence.
 
         Args:
-            tokens: (B, 272, 256) patch tokens
+            tokens: (B, 272, encoder_dim) patch tokens
         Returns:
             recon: (B, 256, 51) reconstructed spectrogram
         """
@@ -401,17 +407,22 @@ class SpectrogramMAE(nn.Module):
 # ---------------------------------------------------------------------------
 
 def build_mae():
-    """Build MAE with default hyperparameters matching the spec."""
+    """Build MAE with default hyperparameters.
+
+    Encoder: 8 layers, 384-dim, 8 heads — enough capacity for 256x51 spectrograms.
+    Decoder: 6 layers, 192-dim, 6 heads — stronger decoder for good reconstruction.
+    Total: ~18M params.
+    """
     return SpectrogramMAE(
         encoder_kwargs=dict(
             in_channels=1, freq_bins=256, time_bins=51,
             patch_freq=16, patch_time=3,
-            hidden_dim=256, depth=6, heads=8, mlp_dim=1024, dim_head=32,
+            hidden_dim=384, depth=8, heads=8, mlp_dim=1536, dim_head=48,
         ),
         decoder_kwargs=dict(
-            encoder_dim=256, decoder_dim=128, num_patches=272,
+            encoder_dim=384, decoder_dim=192, num_patches=272,
             n_freq=16, n_time=17, patch_freq=16, patch_time=3,
-            depth=4, heads=4, mlp_dim=512, dim_head=32,
+            depth=6, heads=6, mlp_dim=768, dim_head=32,
         ),
     )
 

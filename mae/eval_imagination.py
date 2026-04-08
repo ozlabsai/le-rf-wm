@@ -100,7 +100,7 @@ def run(args):
     mae_model.requires_grad_(False)
 
     # Load bridge
-    bridge = LatentBridge(wm_dim=192, mae_dim=256, num_patches=272).to(device)
+    bridge = LatentBridge(wm_dim=192, mae_dim=384, num_patches=272).to(device)
     bridge.load_state_dict(torch.load(mae_dir / "bridge_best.ckpt", map_location=device, weights_only=True))
     bridge.requires_grad_(False)
 

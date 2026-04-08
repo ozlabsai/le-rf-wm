@@ -184,7 +184,16 @@ def train(args):
 
         for batch in train_loader:
             batch = batch.to(device)
+
+            # Primary: masked reconstruction
             loss, _, _ = model(batch, mask_ratio=args.mask_ratio)
+
+            # Every 4th step: add full-reconstruction loss (no masking)
+            # This directly trains the decode path used by reconstruct()
+            if step % 4 == 0:
+                recon = model.reconstruct(batch).unsqueeze(1)  # (B, 1, 256, 51)
+                recon_loss = nn.functional.mse_loss(recon, batch)
+                loss = loss + 0.5 * recon_loss
 
             optimizer.zero_grad()
             loss.backward()
@@ -237,12 +246,12 @@ def main():
     parser.add_argument("--mae_dir", default="mae", help="Output directory for MAE artifacts")
     parser.add_argument("--epochs", type=int, default=50)
     parser.add_argument("--bs", type=int, default=256)
-    parser.add_argument("--lr", type=float, default=1e-4)
+    parser.add_argument("--lr", type=float, default=1.5e-4)
     parser.add_argument("--min_lr", type=float, default=1e-6)
     parser.add_argument("--wd", type=float, default=0.05)
-    parser.add_argument("--mask_ratio", type=float, default=0.75)
+    parser.add_argument("--mask_ratio", type=float, default=0.60)
     parser.add_argument("--warmup_epochs", type=int, default=5)
-    parser.add_argument("--check_every", type=int, default=10, help="SSIM check interval (epochs)")
+    parser.add_argument("--check_every", type=int, default=5, help="SSIM check interval (epochs)")
     parser.add_argument("--workers", type=int, default=4)
     args = parser.parse_args()
     train(args)
