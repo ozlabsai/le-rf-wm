@@ -64,6 +64,46 @@ def variance_loss(emb, target_std=1.0, eps=1e-4):
     return torch.relu(target_std - std).mean()
 
 
+def residual_cosine_loss(pred, target, anchor):
+    """L2-normalized residual MSE (equivalent to cosine distance on deltas)."""
+    pred_delta = F.normalize(pred - anchor, dim=-1)
+    tgt_delta = F.normalize(target - anchor, dim=-1)
+    return (pred_delta - tgt_delta).pow(2).mean()
+
+
+def compute_rollout_loss(model, ctx_emb, all_targets, history_size, n_rollout_steps):
+    """Autoregressive rollout with full backprop, loss at each step.
+
+    ctx_emb: (B, history_size, D) — ground truth context
+    all_targets: (B, n_targets, D) — ground truth future frames (detached)
+    Returns: mean rollout loss across steps
+    """
+    n_steps = min(n_rollout_steps, all_targets.size(1))
+    if n_steps == 0:
+        return torch.tensor(0.0, device=ctx_emb.device)
+
+    rollout_ctx = ctx_emb  # (B, H, D) — starts as ground truth
+    step_losses = []
+
+    for t in range(n_steps):
+        # Predict next step from current context (may include own predictions)
+        pred_all = model.predict(rollout_ctx)  # (B, H, D)
+        pred_next = pred_all[:, -1:]           # (B, 1, D) — last output is next-step prediction
+
+        # Target for this step
+        target_t = all_targets[:, t:t+1]       # (B, 1, D)
+        anchor_t = rollout_ctx[:, -1:]         # (B, 1, D) — last frame in current context
+
+        # Residual cosine loss for this step
+        step_loss = residual_cosine_loss(pred_next, target_t, anchor_t.detach())
+        step_losses.append(step_loss)
+
+        # Shift context: drop oldest, append prediction (full backprop — no detach)
+        rollout_ctx = torch.cat([rollout_ctx[:, 1:], pred_next], dim=1)
+
+    return torch.stack(step_losses).mean()
+
+
 def rf_forward(self, batch, stage, cfg):
     """Encode RF spectrograms, predict next states, compute losses."""
 
@@ -72,6 +112,13 @@ def rf_forward(self, batch, stage, cfg):
     epoch = self.current_epoch
     lambd = sigreg_weight_schedule(epoch, cfg.loss)
     var_weight = cfg.loss.get("variance_weight", 1.0)
+
+    # Rollout config
+    rollout_cfg = cfg.loss.get("rollout", {})
+    rollout_steps = rollout_cfg.get("steps", 0)
+    rollout_weight = rollout_cfg.get("weight", 0.5)
+    rollout_warmup = rollout_cfg.get("warmup_epochs", 10)
+    rollout_active = rollout_steps > 0 and epoch >= rollout_warmup
 
     output = self.model.encode_rf(batch)
 
@@ -84,25 +131,32 @@ def rf_forward(self, batch, stage, cfg):
     # Match prediction and target lengths (predictor outputs ctx_len frames)
     n_match = min(n_preds, ctx_len)
     pred_emb = pred_emb[:, -n_match:]               # last n_match predictions
-    tgt_emb = tgt_emb[:, :n_match]                   # first n_match targets
+    tgt_matched = tgt_emb[:, :n_match]               # first n_match targets
 
     # Residual prediction: predict change from last context frame
     anchor = ctx_emb[:, -1:].detach()                # (B, 1, D)
-    tgt_delta = tgt_emb - anchor                     # (B, n_match, D)
-    pred_delta = pred_emb - anchor                   # (B, n_match, D)
+
+    # Single-step loss (L2-normalized residual)
+    output["pred_loss"] = residual_cosine_loss(pred_emb, tgt_matched, anchor)
+
+    # Rollout loss (autoregressive, full backprop)
+    if rollout_active:
+        output["rollout_loss"] = compute_rollout_loss(
+            self.model, ctx_emb, tgt_emb, ctx_len, rollout_steps)
+    else:
+        output["rollout_loss"] = torch.tensor(0.0, device=emb.device)
 
     # Flatten embeddings across batch and time for variance computation
     emb_flat = rearrange(emb, "b t d -> (b t) d")
 
-    # L2-normalize residuals before loss — direction of change, not magnitude
-    pred_norm = F.normalize(pred_delta, dim=-1)
-    tgt_norm = F.normalize(tgt_delta, dim=-1)
-
-    # LeWM loss + variance regularizer
-    output["pred_loss"] = (pred_norm - tgt_norm).pow(2).mean()
+    # Regularizers
     output["sigreg_loss"] = self.sigreg(emb.transpose(0, 1))
     output["var_loss"] = variance_loss(emb_flat)
+
+    # Total loss
+    rl_weight = rollout_weight if rollout_active else 0.0
     output["loss"] = (output["pred_loss"]
+                      + rl_weight * output["rollout_loss"]
                       + lambd * output["sigreg_loss"]
                       + var_weight * output["var_loss"])
 
@@ -115,6 +169,7 @@ def rf_forward(self, batch, stage, cfg):
 
     losses_dict = {f"{stage}/{k}": v.detach() for k, v in output.items() if "loss" in k}
     losses_dict[f"{stage}/sigreg_weight"] = lambd
+    losses_dict[f"{stage}/rollout_weight"] = rl_weight
     losses_dict[f"{stage}/emb_std_mean"] = output["emb_std_mean"]
     losses_dict[f"{stage}/emb_std_min"] = output["emb_std_min"]
     losses_dict[f"{stage}/emb_std_max"] = output["emb_std_max"]

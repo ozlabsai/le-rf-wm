@@ -65,6 +65,10 @@ predictor:
 
 loss:
   variance_weight: 1.0    # VICReg-style variance floor on embeddings
+  rollout:
+    steps: 3              # autoregressive rollout steps during training (0 = disabled)
+    weight: 0.5           # weight of rollout loss relative to single-step loss
+    warmup_epochs: 10     # start rollout loss after this many epochs
   sigreg:
     weight: 0.05          # used when schedule=constant
     schedule: linear      # constant | linear
