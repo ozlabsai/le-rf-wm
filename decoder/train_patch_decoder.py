@@ -21,7 +21,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from patch_decoder import PatchDecoder
 
-CACHE = Path(__file__).parent / "cache"
+import os
+CACHE = Path(os.environ.get("DECODER_CACHE", str(Path(__file__).parent / "cache")))
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 CHECKPOINT = "/workspace/data/lewm_rf_epoch_99_numpreds6_object.ckpt"
 NORM_STATS = "/workspace/data/norm_stats.json"
