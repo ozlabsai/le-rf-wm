@@ -1,0 +1,201 @@
+/* RF-LeWM Demo — Design System
+   Precision instrument aesthetic. Dark theme. Signals workstation feel. */
+
+:root {
+  /* Surfaces */
+  --bg-primary: #0A0B0E;
+  --bg-surface: #13151A;
+  --bg-elevated: #1A1C22;
+  --border: #1E2028;
+  --border-focus: #2A2D38;
+
+  /* Text */
+  --text-primary: #E8E9ED;
+  --text-secondary: #8B8D97;
+  --text-muted: #55576A;
+
+  /* Accent */
+  --accent: #E8520A;
+  --accent-dim: #B8420A;
+
+  /* Status */
+  --success: #2A7A4B;
+  --success-dim: #1A4A2E;
+  --warning: #D4A017;
+  --alert: #C9302C;
+  --alert-dim: #8B2020;
+
+  /* Spectrogram colormap stops */
+  --spec-zero: #0B1026;
+  --spec-low: #0F2B4C;
+  --spec-mid: #1A6B6A;
+  --spec-high: #D4A017;
+  --spec-max: #F5E642;
+
+  /* Typography */
+  --font-mono: "IBM Plex Mono", "SF Mono", "Fira Code", monospace;
+  --font-ui: "DM Sans", "Segoe UI", system-ui, sans-serif;
+
+  /* Spacing */
+  --gap-xs: 4px;
+  --gap-sm: 8px;
+  --gap-md: 16px;
+  --gap-lg: 24px;
+  --gap-xl: 32px;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Panel component */
+.panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.panel-header {
+  padding: var(--gap-sm) var(--gap-md);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-header h3 {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+.panel-body {
+  padding: var(--gap-md);
+}
+
+/* Metric display */
+.metric {
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.metric-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.metric-label {
+  color: var(--text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Badge */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.badge-regime {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.badge-detected {
+  background: var(--success-dim);
+  border: 1px solid var(--success);
+  color: var(--success);
+}
+
+.badge-not-detected {
+  background: var(--alert-dim);
+  border: 1px solid var(--alert);
+  color: var(--alert);
+}
+
+/* Buttons */
+button {
+  font-family: var(--font-ui);
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: var(--gap-xs) var(--gap-md);
+  font-size: 13px;
+  transition: background 0.15s;
+}
+
+button.primary {
+  background: var(--accent);
+  color: white;
+}
+
+button.primary:hover {
+  background: var(--accent-dim);
+}
+
+button.secondary {
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+button.secondary:hover {
+  border-color: var(--border-focus);
+  color: var(--text-primary);
+}
+
+/* Select / dropdown */
+select {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
