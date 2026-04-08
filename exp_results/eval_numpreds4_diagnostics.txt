@@ -1,0 +1,117 @@
+Preloading /workspace/data/test.h5 into RAM...
+  Loaded torch.Size([2999, 16, 2, 256, 51]), 5.0 GB
+
+======================================================================
+RF-LeWM Diagnostics (lewm_rf_epoch_99, 2999 test samples)
+======================================================================
+
+--- 1. Embedding Space Statistics ---
+  All embeddings:    norm mean=13.2524  std=1.4471
+  Context embeddings: norm mean=13.2523  std=1.4363
+  Target embeddings:  norm mean=13.2524  std=1.4496
+  Embedding dim-wise std: 0.9558
+
+  If target norms are small (<<1), zero baseline wins because
+  targets are close to zero. If norms ~1, the space is well-scaled.
+
+--- 2. MSE vs Cosine Similarity (one-step) ---
+  Method                    MSE   CosSim
+  --------------------------------------
+  RF-LeWM              1.4112 0.1229
+  Copy-last            1.6063 0.1320
+  Mean-context         1.1039 0.1704
+  Zero                 0.9250      N/A
+
+  If model has higher cosine sim than baselines despite worse MSE,
+  the model predicts the right direction but wrong scale.
+
+--- 2b. Residual Cosine Similarity (direction of change) ---
+  Method               Delta CosSim
+  ----------------------------------
+  RF-LeWM              0.5074
+  Mean-context         0.5578
+  Copy-last                  0.0000  (predicts zero change)
+
+  This measures cosine similarity between predicted and actual
+  temporal CHANGE (delta), which is what the model was trained on.
+  Higher = better directional prediction of dynamics.
+
+--- 3. Per-Regime Breakdown (one-step MSE) ---
+  Regime                             N    Model     Copy     Zero     Mean  Mdl>Copy?   CosSim
+  ------------------------------------------------------------------------------------------
+  scene_0004                        50   1.6300   1.8383   1.0279   1.2961        YES   0.0682
+  scene_0013                        50   1.2882   1.3707   0.9349   0.9591        YES   0.2327
+  scene_0014                        50   0.8468   1.0587   0.5912   0.7038        YES   0.0965
+  scene_0016                        50   1.5623   1.8194   1.0047   1.2357        YES   0.1022
+  scene_0017                        50   1.4130   1.5549   0.9657   1.0795        YES   0.1669
+  scene_0023                        50   1.3166   1.3398   0.9412   0.9789        YES   0.2296
+  scene_0041                        50   0.9744   1.2408   0.6733   0.8216        YES   0.1065
+  scene_0045                        50   0.7428   0.9522   0.5593   0.6439        YES   0.1703
+  scene_0048                        50   1.3925   1.5292   0.9951   1.1271        YES   0.2004
+  scene_0050                        50   1.6128   1.7313   1.0025   1.2308        YES   0.0774
+  scene_0053                        50   1.5055   1.6878   1.0107   1.1714        YES   0.1630
+  scene_0058                        50   1.2814   1.4184   0.9556   1.0094        YES   0.2457
+  scene_0064                        50   1.6572   1.9368   1.0378   1.3200        YES   0.0775
+  scene_0072                        50   1.5168   1.7262   0.9539   1.1624        YES   0.0872
+  scene_0080                        50   1.6796   1.9060   1.0284   1.3232        YES   0.0593
+  scene_0082                        50   1.2479   1.5812   0.8410   1.0679        YES   0.1066
+  scene_0102                        50   1.5594   1.8785   1.0191   1.2596        YES   0.1008
+  scene_0111                        50   1.1590   1.4340   0.7659   0.9375        YES   0.0934
+  scene_0112                        50   1.6564   1.9117   1.0385   1.3086        YES   0.0691
+  scene_0113                        50   1.6740   1.9271   1.0248   1.2708        YES   0.0634
+  scene_0115                        50   1.6675   1.9336   1.0366   1.2848        YES   0.0792
+  scene_0120                        50   0.7756   0.9740   0.5673   0.6761        YES   0.1428
+  scene_0126                        50   1.6951   1.7478   1.0496   1.2186        YES   0.0775
+  scene_0136                        50   0.7518   0.9790   0.5641   0.6767        YES   0.1720
+  scene_0141                        50   1.5183   1.6669   0.9693   1.1349        YES   0.1246
+  scene_0143                        50   1.6531   1.8083   1.0215   1.2278        YES   0.0718
+  scene_0151                        50   1.5615   1.7112   0.9974   1.1998        YES   0.1207
+  scene_0173                        50   1.5892   1.6489   1.0188   1.1181        YES   0.1204
+  scene_0175                        50   1.6073   1.8731   1.0063   1.2711        YES   0.0735
+  scene_0177                        50   1.3096   1.3592   0.9148   0.9638        YES   0.2083
+  scene_0184                        50   1.3952   1.4583   0.9445   1.0877        YES   0.1821
+  scene_0194                        50   1.6232   1.8461   1.0093   1.2214        YES   0.0889
+  scene_0195                        50   1.5459   1.7814   1.0210   1.1926        YES   0.1207
+  scene_0215                        50   1.2565   1.2514   0.9261   0.9651         no   0.2364
+  scene_0217                        50   1.6230   1.7642   1.0107   1.2132        YES   0.0839
+  scene_0230                        50   0.8155   1.0555   0.6111   0.7195        YES   0.1751
+  scene_0236                        49   1.6423   1.7665   1.0007   1.2467        YES   0.0642
+  scene_0259                        50   1.5992   1.8778   0.9734   1.2250        YES   0.0516
+  scene_0275                        50   1.6467   1.9332   1.0496   1.2936        YES   0.0849
+  scene_0280                        50   1.4584   1.7344   0.9281   1.1537        YES   0.0646
+  scene_0283                        50   1.5426   1.8863   1.0027   1.2097        YES   0.1292
+  scene_0288                        50   1.5750   1.7930   1.0105   1.2278        YES   0.1166
+  scene_0302                        50   1.5500   1.7709   0.9998   1.2049        YES   0.1116
+  scene_0303                        50   1.5013   1.6714   1.0278   1.1822        YES   0.1725
+  scene_0309                        50   1.0604   1.3656   0.7705   0.8774        YES   0.1711
+  scene_0310                        50   1.4870   1.6474   0.9872   1.2085        YES   0.1401
+  scene_0328                        50   0.8346   1.0569   0.5992   0.7139        YES   0.1338
+  scene_0333                        50   1.5419   1.6581   0.9825   1.1220        YES   0.1121
+  scene_0347                        50   0.8104   1.0333   0.5728   0.6965        YES   0.1208
+  scene_0358                        50   1.6261   1.8479   1.0364   1.2657        YES   0.1020
+  scene_0360                        50   0.7312   0.9435   0.5270   0.6309        YES   0.1433
+  scene_0366                        50   1.4229   1.5573   0.9959   1.1226        YES   0.1882
+  scene_0367                        50   1.5996   1.7992   1.0237   1.2693        YES   0.1104
+  scene_0378                        50   1.5397   1.7859   1.0013   1.1931        YES   0.1295
+  scene_0380                        50   1.6114   1.8912   1.0382   1.2889        YES   0.1105
+  scene_0382                        50   1.5064   1.5784   0.9850   1.1742        YES   0.1484
+  scene_0385                        50   1.6303   1.8675   1.0192   1.2735        YES   0.0791
+  scene_0388                        50   1.5403   1.7192   0.9924   1.2080        YES   0.1191
+  scene_0391                        50   1.4929   1.6912   0.9353   1.1469        YES   0.0801
+  scene_0397                        50   1.6206   1.8020   1.0042   1.2223        YES   0.0941
+
+--- 4. Target Embedding Norm Distribution ---
+  p  0: 8.2787
+  p 10: 10.6784
+  p 25: 12.9235
+  p 50: 13.6395
+  p 75: 14.1494
+  p 90: 14.5769
+  p100: 23.9539
+
+  If p50 (median) is near 0, most targets are trivially zero-like.
+  If p50 >> 0, the space has meaningful structure.
+
+Time: 9.8s
+======================================================================
+
