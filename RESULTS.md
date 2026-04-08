@@ -205,20 +205,34 @@ A series of training runs that all converged to degenerate solutions. Each failu
   - num_preds=6 is **worse** than num_preds=4 on most metrics — harder horizon didn't improve dynamics
   - The model became more conservative (smoother rollouts, less MSE improvement, weaker surprise)
 
-#### num_preds=4 vs num_preds=6 Summary
+#### Retroactive: num_preds=4 Residual Delta Cosine (measured Apr 8)
+
+Ran the updated diagnostics (Section 2b) on the v0 checkpoint:
+
+| Method | Delta CosSim |
+|--------|-------------|
+| RF-LeWM (preds=4) | 0.507 |
+| Mean-context | **0.558** |
+| Copy-last | 0.000 |
+
+The v0 model does NOT beat mean-context on residual direction prediction. This changes the interpretation of both runs.
+
+#### num_preds=4 vs num_preds=6 Summary (Updated)
 
 | Metric | preds=4 | preds=6 | Winner |
 |--------|---------|---------|--------|
 | MSE vs copy-last | **+42.6%** | +30.6% | preds=4 |
-| Absolute CosSim | **0.076** | 0.068 | preds=4 |
-| Model > Copy CosSim? | **Yes** | No | preds=4 |
-| Scenes beating copy | 58/60 | **60/60** | preds=6 |
+| Absolute CosSim | **0.123** | 0.068 | preds=4 |
+| **Delta CosSim (model)** | 0.507 | **0.577** | **preds=6** |
+| **Delta CosSim > mean?** | No (0.507<0.558) | **Yes (0.577>0.555)** | **preds=6** |
 | Noise burst surprise | **1.66×** | 1.16× | preds=4 |
 | Rollout smoothness | 1.03–1.61× | **1.06–1.30×** | preds=6 |
 | Train/val ratio | **1.24×** | 1.47× | preds=4 |
-| Residual delta CosSim | not measured | **0.577** | — |
+| Scenes beating copy (MSE) | 58/60 | **60/60** | preds=6 |
 
-**Conclusion:** num_preds=4 remains the better configuration. Pushing the prediction horizon to 6 made the model more conservative without improving dynamics learning. The residual delta cosine metric (0.577) is valuable and should be measured for num_preds=4 retroactively.
+**Revised Conclusion:** The picture is more nuanced than initially assessed. num_preds=4 wins on absolute metrics (MSE, absolute CosSim, surprise detection), but num_preds=6 wins on the metric that most directly measures dynamics learning: **residual delta cosine similarity**. num_preds=6 is the first and only model that predicts the direction of temporal change better than mean-context (0.577 > 0.555). The preds=4 model's MSE advantage was partly from magnitude management, not dynamics.
+
+**Implication:** The "right" model depends on what you optimize for. For raw prediction accuracy (MSE), use preds=4. For dynamics understanding (direction of change), preds=6 is better. For a production RF world model, the delta cosine metric is likely more relevant.
 
 ---
 
