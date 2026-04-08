@@ -19,7 +19,7 @@ from torchmetrics.image import StructuralSimilarityIndexMeasure
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from decoder.patch_decoder import PatchDecoder
+from patch_decoder import PatchDecoder
 
 CACHE = Path(__file__).parent / "cache"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
