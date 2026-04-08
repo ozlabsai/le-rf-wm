@@ -94,3 +94,19 @@ class SpectrogramViT(nn.Module):
             return pooled, patch_norms
 
         return pooled
+
+    def forward_patches(self, x):
+        """Return full patch token sequence before pooling.
+        x: (B, C, F, T)
+        returns: (B, n_freq, n_time, hidden_dim) — patch tokens in spatial layout
+        """
+        B = x.size(0)
+        x = self.patch_embed(x)
+        x = rearrange(x, "b d f t -> b f t d")
+        x = x + self.freq_pos + self.time_pos
+        x = rearrange(x, "b f t d -> b (f t) d")
+        x = self.dropout(x)
+        for block in self.blocks:
+            x = block(x)
+        x = self.norm(x)
+        return rearrange(x, "b (f t) d -> b f t d", f=self.n_freq, t=self.n_time)
