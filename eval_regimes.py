@@ -22,7 +22,7 @@ import torch.nn.functional as F
 from dataset import RFSpectralDataset, load_norm_stats
 
 
-def run(data_path, model_policy, metadata_path="scene_metadata.json"):
+def run(data_path, model_policy, metadata_path="scene_metadata.json", output_dir=None):
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     # Load scene metadata (regime, SNR, etc.)
@@ -232,11 +232,43 @@ def run(data_path, model_policy, metadata_path="scene_metadata.json"):
     print(f"\nTime: {elapsed:.1f}s")
     print(f"{'='*90}\n")
 
+    # Save structured results
+    if output_dir:
+        out = Path(output_dir)
+        out.mkdir(parents=True, exist_ok=True)
+        save_data = {"model_policy": model_policy, "num_samples": len(mse_model),
+                     "time_seconds": elapsed, "regimes": {}, "snr_ranges": {}}
+        for regime in regime_order:
+            idx = regime_indices.get(regime, [])
+            if not idx:
+                continue
+            idx = np.array(idx)
+            save_data["regimes"][regime] = {
+                "n": len(idx),
+                "model_mse": float(mse_model[idx].mean()),
+                "copy_mse": float(mse_copy[idx].mean()),
+                "model_cossim": float(cos_model[idx].mean()),
+                "copy_cossim": float(cos_copy[idx].mean()),
+            }
+        for lo, hi in [(-10, 0), (0, 10), (10, 20), (20, 35)]:
+            idx = [i for i, s in enumerate(sample_snrs) if lo <= s < hi and i < len(mse_model)]
+            if idx:
+                idx = np.array(idx)
+                save_data["snr_ranges"][f"[{lo},{hi})"] = {
+                    "n": len(idx), "model_mse": float(mse_model[idx].mean()),
+                    "copy_mse": float(mse_copy[idx].mean()),
+                    "model_cossim": float(cos_model[idx].mean()),
+                }
+        with open(out / "regimes.json", "w") as f:
+            json.dump(save_data, f, indent=2)
+        print(f"Results saved to {out / 'regimes.json'}")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_path", type=str, required=True)
     parser.add_argument("--model_policy", type=str, default="lewm_rf_epoch_99")
     parser.add_argument("--metadata", type=str, default="scene_metadata.json")
+    parser.add_argument("--output_dir", type=str, default=None)
     args = parser.parse_args()
-    run(args.data_path, args.model_policy, args.metadata)
+    run(args.data_path, args.model_policy, args.metadata, args.output_dir)

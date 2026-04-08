@@ -23,7 +23,7 @@ from einops import rearrange
 from dataset import RFSpectralDataset, load_norm_stats
 
 
-def run(data_path, model_policy):
+def run(data_path, model_policy, output_dir=None):
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     # Load norm stats
@@ -262,10 +262,39 @@ def run(data_path, model_policy):
     print(f"\nTime: {elapsed:.1f}s")
     print(f"{'='*70}\n")
 
+    # Save structured results
+    if output_dir:
+        import json
+        out = Path(output_dir)
+        out.mkdir(parents=True, exist_ok=True)
+        save_data = {
+            "model_policy": model_policy, "num_samples": len(dataset), "time_seconds": elapsed,
+            "embedding_stats": {
+                "all_norm_mean": emb_norms.mean().item(), "all_norm_std": emb_norms.std().item(),
+                "target_norm_mean": target_norms.mean().item(), "ctx_norm_mean": ctx_norms.mean().item(),
+            },
+            "onestep": {
+                "model_mse": mse_model.mean().item(), "copy_mse": mse_copy.mean().item(),
+                "mean_mse": mse_mean.mean().item(), "zero_mse": mse_zero.mean().item(),
+                "model_cossim": cos_model.mean().item(), "copy_cossim": cos_copy.mean().item(),
+                "mean_cossim": cos_mean.mean().item(),
+            },
+            "residual_cossim": {},
+        }
+        if per_sample_cos_delta_model:
+            save_data["residual_cossim"] = {
+                "model_delta_cossim": torch.cat(per_sample_cos_delta_model).mean().item(),
+                "mean_delta_cossim": torch.cat(per_sample_cos_delta_mean).mean().item(),
+            }
+        with open(out / "diagnostics.json", "w") as f:
+            json.dump(save_data, f, indent=2)
+        print(f"Results saved to {out / 'diagnostics.json'}")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_path", type=str, required=True)
     parser.add_argument("--model_policy", type=str, default="lewm_rf_epoch_99")
+    parser.add_argument("--output_dir", type=str, default=None)
     args = parser.parse_args()
-    run(args.data_path, args.model_policy)
+    run(args.data_path, args.model_policy, args.output_dir)

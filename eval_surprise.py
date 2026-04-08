@@ -80,7 +80,7 @@ def compute_surprise(model, obs, history_size=3, max_rollout=12):
     return surprise
 
 
-def run(data_path, model_policy):
+def run(data_path, model_policy, output_dir=None):
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     stats_path = Path(data_path).parent / "norm_stats.json"
@@ -161,10 +161,31 @@ def run(data_path, model_policy):
     print(f"\nTime: {elapsed:.1f}s")
     print(f"{'='*70}\n")
 
+    # Save structured results
+    if output_dir:
+        import json
+        out = Path(output_dir)
+        out.mkdir(parents=True, exist_ok=True)
+        save_data = {"model_policy": model_policy, "time_seconds": elapsed, "perturbations": {}}
+        for name in perturbations:
+            scores = torch.cat(results[name])
+            normal_median = np.median(torch.cat(results["Normal (no perturbation)"]).numpy())
+            frac_above = float((scores.numpy() > normal_median).mean()) if name != "Normal (no perturbation)" else 0.5
+            save_data["perturbations"][name] = {
+                "mean": float(scores.mean()), "std": float(scores.std()),
+                "median": float(scores.median()), "p95": float(np.percentile(scores.numpy(), 95)),
+                "ratio": float(scores.mean() / normal_mean) if normal_mean > 0 else 0,
+                "frac_above_normal_median": frac_above,
+            }
+        with open(out / "surprise.json", "w") as f:
+            json.dump(save_data, f, indent=2)
+        print(f"Results saved to {out / 'surprise.json'}")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_path", type=str, required=True)
     parser.add_argument("--model_policy", type=str, default="lewm_rf_epoch_99")
+    parser.add_argument("--output_dir", type=str, default=None)
     args = parser.parse_args()
-    run(args.data_path, args.model_policy)
+    run(args.data_path, args.model_policy, args.output_dir)

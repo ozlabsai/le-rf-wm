@@ -9,6 +9,7 @@ Run: python eval_baselines.py --data_path /path/to/test.h5 --model_policy lewm_r
 """
 
 import argparse
+import json
 import time
 
 import stable_worldmodel as swm
@@ -46,7 +47,7 @@ def evaluate_rollout(all_emb, history_size, max_rollout, predict_fn):
     return onestep_mse, rollout_errors
 
 
-def run(data_path, model_policy):
+def run(data_path, model_policy, output_dir=None):
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     # Load normalization stats
@@ -174,10 +175,26 @@ def run(data_path, model_policy):
     print(f"\nTime: {elapsed:.1f}s")
     print(f"{'='*70}\n")
 
+    # Save structured results
+    if output_dir:
+        out = Path(output_dir)
+        out.mkdir(parents=True, exist_ok=True)
+        save_data = {"model_policy": model_policy, "num_samples": len(dataset),
+                     "time_seconds": elapsed, "methods": {}}
+        for name in baselines:
+            mse_1 = torch.cat(results[name]["onestep"]).mean().item()
+            rollout = [torch.cat(results[name]["rollout"][t]).mean().item()
+                       for t in range(max_rollout)]
+            save_data["methods"][name] = {"onestep_mse": mse_1, "rollout_mse": rollout}
+        with open(out / "baselines.json", "w") as f:
+            json.dump(save_data, f, indent=2)
+        print(f"Results saved to {out / 'baselines.json'}")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_path", type=str, required=True)
     parser.add_argument("--model_policy", type=str, default="lewm_rf_epoch_99")
+    parser.add_argument("--output_dir", type=str, default=None)
     args = parser.parse_args()
-    run(args.data_path, args.model_policy)
+    run(args.data_path, args.model_policy, args.output_dir)
