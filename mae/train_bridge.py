@@ -1,0 +1,305 @@
+"""Stage 3: Train the projection bridge from world model embeddings to MAE latent space.
+
+Maps WM embedding [B, 192] -> MAE patch tokens [B, 272, 256], enabling pixel-space
+visualization of world model predictions.
+
+Usage:
+    python mae/train_bridge.py
+    python mae/train_bridge.py --epochs 50 --bs 1024
+"""
+
+import argparse
+import json
+import sys
+import time
+from pathlib import Path
+
+import h5py
+import numpy as np
+import torch
+from torch import nn
+from torch.utils.data import Dataset, DataLoader
+
+sys.path.insert(0, str(Path(__file__).parent))
+from mae import build_mae
+
+
+# ---------------------------------------------------------------------------
+# Bridge architecture
+# ---------------------------------------------------------------------------
+
+class LatentBridge(nn.Module):
+    """Projects world model embedding to MAE patch token sequence.
+
+    Input:  [B, 192]  -- world model mean-pooled embedding
+    Output: [B, 272, 256] -- predicted MAE encoder patch tokens
+    """
+
+    def __init__(self, wm_dim=192, mae_dim=256, num_patches=272):
+        super().__init__()
+        self.num_patches = num_patches
+        self.mae_dim = mae_dim
+        self.net = nn.Sequential(
+            nn.Linear(wm_dim, 512),
+            nn.LayerNorm(512),
+            nn.GELU(),
+            nn.Linear(512, 1024),
+            nn.LayerNorm(1024),
+            nn.GELU(),
+            nn.Linear(1024, num_patches * mae_dim),
+        )
+
+    def forward(self, x):
+        """x: (B, wm_dim) -> (B, num_patches, mae_dim)"""
+        out = self.net(x)
+        return out.reshape(-1, self.num_patches, self.mae_dim)
+
+
+# ---------------------------------------------------------------------------
+# Dataset: paired (wm_embedding, logmag_frame)
+# ---------------------------------------------------------------------------
+
+class PairedEmbeddingDataset(Dataset):
+    """Paired dataset: world model embedding + log-magnitude frame.
+
+    Flattens trajectory dimension: [N, 16, ...] -> [N*16, ...]
+    """
+
+    def __init__(self, emb_h5_path, logmag_h5_path, vmin, vmax):
+        with h5py.File(emb_h5_path, "r") as f:
+            emb = f["embeddings"][()]  # [N, 16, 192]
+        with h5py.File(logmag_h5_path, "r") as f:
+            logmag = f["logmag"][()]  # [N, 16, 256, 51]
+
+        N, T = emb.shape[:2]
+        self.embeddings = emb.reshape(N * T, -1).astype(np.float32)     # [N*16, 192]
+        logmag_flat = logmag.reshape(N * T, 256, 51).astype(np.float32)  # [N*16, 256, 51]
+
+        # Normalize to [0, 1]
+        self.vmin = vmin
+        self.vmax = vmax
+        scale = max(vmax - vmin, 1e-8)
+        self.frames = np.clip((logmag_flat - vmin) / scale, 0.0, 1.0)
+
+    def __len__(self):
+        return len(self.embeddings)
+
+    def __getitem__(self, idx):
+        emb = torch.from_numpy(self.embeddings[idx])         # (192,)
+        frame = torch.from_numpy(self.frames[idx]).unsqueeze(0)  # (1, 256, 51)
+        return emb, frame
+
+
+# ---------------------------------------------------------------------------
+# SSIM helpers
+# ---------------------------------------------------------------------------
+
+def compute_bridge_ssim(bridge, mae_model, dataloader, device):
+    """SSIM for bridge -> MAE decoder reconstructions vs ground truth."""
+    from torchmetrics.image import StructuralSimilarityIndexMeasure
+    ssim_metric = StructuralSimilarityIndexMeasure(data_range=1.0).to(device)
+
+    bridge.eval()
+    mae_model.eval()
+    with torch.no_grad():
+        for emb_batch, frame_batch in dataloader:
+            emb_batch = emb_batch.to(device)
+            frame_batch = frame_batch.to(device)
+
+            # Bridge -> MAE decoder
+            pred_tokens = bridge(emb_batch)
+            recon = mae_model.decode(pred_tokens).unsqueeze(1).clamp(0, 1)
+            ssim_metric.update(recon, frame_batch)
+
+    return ssim_metric.compute().item()
+
+
+def compute_mae_direct_ssim(mae_model, dataloader, device):
+    """SSIM for direct MAE encode->decode (baseline)."""
+    from torchmetrics.image import StructuralSimilarityIndexMeasure
+    ssim_metric = StructuralSimilarityIndexMeasure(data_range=1.0).to(device)
+
+    mae_model.eval()
+    with torch.no_grad():
+        for _, frame_batch in dataloader:
+            frame_batch = frame_batch.to(device)
+            recon = mae_model.reconstruct(frame_batch).unsqueeze(1).clamp(0, 1)
+            ssim_metric.update(recon, frame_batch)
+
+    return ssim_metric.compute().item()
+
+
+# ---------------------------------------------------------------------------
+# Training
+# ---------------------------------------------------------------------------
+
+def train(args):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Device: {device}")
+
+    cache_dir = Path(args.cache_dir)
+    mae_dir = Path(args.mae_dir)
+
+    # Load norm stats
+    norm_path = mae_dir / "cache" / "norm_stats.json"
+    stats = json.load(open(norm_path))
+    vmin, vmax = stats["min"], stats["max"]
+    print(f"Norm stats: min={vmin:.4f}, max={vmax:.4f}")
+
+    # Load frozen MAE
+    mae_model = build_mae().to(device)
+    mae_ckpt = mae_dir / "mae_best.ckpt"
+    mae_model.load_state_dict(torch.load(mae_ckpt, map_location=device, weights_only=True))
+    mae_model.requires_grad_(False)
+    print(f"Loaded frozen MAE from {mae_ckpt}")
+
+    # Datasets
+    print("Loading paired datasets...")
+    train_ds = PairedEmbeddingDataset(
+        str(cache_dir / "embeddings_train.h5"),
+        str(cache_dir / "logmag_train.h5"),
+        vmin, vmax,
+    )
+    val_ds = PairedEmbeddingDataset(
+        str(cache_dir / "embeddings_val.h5"),
+        str(cache_dir / "logmag_val.h5"),
+        vmin, vmax,
+    )
+    print(f"Train: {len(train_ds)} pairs, Val: {len(val_ds)} pairs")
+
+    train_loader = DataLoader(
+        train_ds, batch_size=args.bs, shuffle=True,
+        num_workers=args.workers, pin_memory=True, drop_last=True,
+    )
+    val_loader = DataLoader(
+        val_ds, batch_size=args.bs, shuffle=False,
+        num_workers=args.workers, pin_memory=True,
+    )
+
+    # Bridge
+    bridge = LatentBridge(wm_dim=192, mae_dim=256, num_patches=272).to(device)
+    n_params = sum(p.numel() for p in bridge.parameters())
+    print(f"Bridge parameters: {n_params:,} ({n_params/1e6:.1f}M)")
+
+    # Optimizer
+    optimizer = torch.optim.Adam(bridge.parameters(), lr=args.lr)
+    total_steps = args.epochs * len(train_loader)
+
+    def lr_lambda(step):
+        progress = step / max(total_steps, 1)
+        return args.min_lr / args.lr + (1 - args.min_lr / args.lr) * 0.5 * (1 + np.cos(np.pi * progress))
+
+    scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda)
+
+    # Training loop
+    best_ssim = 0.0
+    best_epoch = -1
+    recon_weight = args.recon_weight
+
+    for epoch in range(args.epochs):
+        bridge.train()
+        epoch_token_loss = 0.0
+        epoch_recon_loss = 0.0
+        n_batches = 0
+        t0 = time.time()
+
+        for emb_batch, frame_batch in train_loader:
+            emb_batch = emb_batch.to(device)
+            frame_batch = frame_batch.to(device)
+
+            # Target: MAE encoder output (frozen)
+            with torch.no_grad():
+                target_tokens = mae_model.encode(frame_batch)  # (B, 272, 256)
+
+            # Bridge prediction
+            pred_tokens = bridge(emb_batch)  # (B, 272, 256)
+
+            # Loss 1: Token-level MSE
+            token_loss = nn.functional.mse_loss(pred_tokens, target_tokens)
+
+            # Loss 2: Reconstruction MSE (through frozen decoder)
+            with torch.no_grad():
+                gt_spec = frame_batch.squeeze(1)  # (B, 256, 51)
+            pred_spec = mae_model.decode(pred_tokens)  # (B, 256, 51)
+            recon_loss = nn.functional.mse_loss(pred_spec, gt_spec)
+
+            loss = token_loss + recon_weight * recon_loss
+
+            optimizer.zero_grad()
+            loss.backward()
+            nn.utils.clip_grad_norm_(bridge.parameters(), 1.0)
+            optimizer.step()
+            scheduler.step()
+
+            epoch_token_loss += token_loss.item()
+            epoch_recon_loss += recon_loss.item()
+            n_batches += 1
+
+        avg_tok = epoch_token_loss / n_batches
+        avg_rec = epoch_recon_loss / n_batches
+        dt = time.time() - t0
+        lr_now = optimizer.param_groups[0]["lr"]
+        print(f"Epoch {epoch+1:3d}/{args.epochs} | token_mse={avg_tok:.5f} | recon_mse={avg_rec:.5f} | lr={lr_now:.2e} | {dt:.1f}s")
+
+        # Periodic SSIM check
+        if (epoch + 1) % args.check_every == 0 or epoch == args.epochs - 1:
+            bridge_ssim = compute_bridge_ssim(bridge, mae_model, val_loader, device)
+            print(f"  Bridge SSIM: {bridge_ssim:.4f}")
+
+            if bridge_ssim > best_ssim:
+                best_ssim = bridge_ssim
+                best_epoch = epoch + 1
+                ckpt_path = mae_dir / "bridge_best.ckpt"
+                torch.save(bridge.state_dict(), ckpt_path)
+                print(f"  -> New best! Saved to {ckpt_path}")
+
+    # Final summary
+    bridge_ssim_final = compute_bridge_ssim(bridge, mae_model, val_loader, device)
+    mae_ssim = compute_mae_direct_ssim(mae_model, val_loader, device)
+
+    # Token MSE on val set
+    bridge.eval()
+    total_token_mse = 0.0
+    n = 0
+    with torch.no_grad():
+        for emb_batch, frame_batch in val_loader:
+            emb_batch = emb_batch.to(device)
+            frame_batch = frame_batch.to(device)
+            target_tokens = mae_model.encode(frame_batch)
+            pred_tokens = bridge(emb_batch)
+            total_token_mse += nn.functional.mse_loss(pred_tokens, target_tokens).item()
+            n += 1
+    val_token_mse = total_token_mse / max(n, 1)
+
+    fidelity = best_ssim / max(mae_ssim, 1e-8)
+
+    print()
+    print("=== BRIDGE TRAINING SUMMARY ===")
+    print(f"Val SSIM (bridge -> MAE decoder):    {best_ssim:.3f}  (epoch {best_epoch})")
+    print(f"Val SSIM (MAE direct reconstruct):   {mae_ssim:.3f}")
+    print(f"Fidelity ratio:                      {fidelity:.2f}x (bridge SSIM / MAE SSIM)")
+    print(f"Token MSE (bridge vs MAE encoder):   {val_token_mse:.5f}")
+
+    if fidelity < 0.70:
+        print(f"\nWARNING: Fidelity ratio {fidelity:.2f}x < 0.70 target.")
+    else:
+        print(f"\nPASS: Fidelity ratio {fidelity:.2f}x >= 0.70 target.")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Train projection bridge: WM -> MAE latent space")
+    parser.add_argument("--cache_dir", default="decoder/cache")
+    parser.add_argument("--mae_dir", default="mae")
+    parser.add_argument("--epochs", type=int, default=30)
+    parser.add_argument("--bs", type=int, default=512)
+    parser.add_argument("--lr", type=float, default=1e-3)
+    parser.add_argument("--min_lr", type=float, default=1e-5)
+    parser.add_argument("--recon_weight", type=float, default=0.3)
+    parser.add_argument("--check_every", type=int, default=5, help="SSIM check interval (epochs)")
+    parser.add_argument("--workers", type=int, default=4)
+    args = parser.parse_args()
+    train(args)
+
+
+if __name__ == "__main__":
+    main()
