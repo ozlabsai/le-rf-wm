@@ -1,0 +1,78 @@
+{
+  "model": "lewm_rf_epoch_100",
+  "description": "RF-LeWM v1 — rollout-aware training (3-step rollout loss, warmup epoch 10, weight 0.5)",
+  "date": "2026-04-08",
+  "wandb_run": "guy-na8/lewm-rf/runs/iw9xkwxg",
+  "checkpoint": "~/.stable_worldmodel/lewm_rf_epoch_100_object.ckpt",
+  "test_set": "/workspace/data/test.h5 (2999 trajectories)",
+  "eval_rf": {
+    "one_step_mse": 1.270252,
+    "surprise_mean": 1.504176,
+    "surprise_std": 1.156431,
+    "rollout_error": {
+      "step_1": 1.270252,
+      "step_2": 1.412672,
+      "step_3": 1.496376,
+      "step_4": 1.559493,
+      "step_5": 1.512757,
+      "step_6": 1.524413,
+      "step_7": 1.523888,
+      "step_8": 1.533732,
+      "step_9": 1.547898,
+      "step_10": 1.550126,
+      "step_11": 1.560239,
+      "step_12": 1.558269
+    }
+  },
+  "baselines": {
+    "copy_last": {
+      "one_step_mse": 2.1868,
+      "twelve_step_mse": 2.2325
+    },
+    "mean_context": {
+      "one_step_mse": 1.4813,
+      "twelve_step_mse": 1.5640
+    },
+    "zero": {
+      "one_step_mse": 1.1630,
+      "twelve_step_mse": 1.1762
+    },
+    "last_delta": {
+      "one_step_mse": 6.5249,
+      "twelve_step_mse": 343.2065
+    },
+    "linear_extrapolation": {
+      "one_step_mse": 3.8273,
+      "twelve_step_mse": 122.6875
+    },
+    "exp_smoothing": {
+      "one_step_mse": 2.1868,
+      "twelve_step_mse": 2.2325
+    }
+  },
+  "vs_baselines": {
+    "vs_copy_last_1step": "-41.9%",
+    "vs_copy_last_12step": "-30.2%",
+    "vs_mean_context_1step": "-14.2%",
+    "vs_mean_context_12step": "-0.4%"
+  },
+  "diagnostics": {
+    "embedding_stats": {
+      "all_norm_mean": 13.939,
+      "all_norm_std": 5.599,
+      "target_norm_mean": 13.944,
+      "ctx_norm_mean": 13.916
+    },
+    "cosine_similarity": {
+      "model": 0.0961,
+      "copy_last": 0.0721,
+      "mean_context": 0.0910,
+      "note": "Model beats copy-last by 33%, mean-context by 6%"
+    },
+    "residual_cosine_similarity": {
+      "model_delta_cossim": 0.6411,
+      "mean_delta_cossim": 0.5592,
+      "note": "Model predicts direction of temporal change 14.7% better than mean-context"
+    }
+  }
+}

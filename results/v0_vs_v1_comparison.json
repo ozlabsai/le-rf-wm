@@ -1,0 +1,61 @@
+{
+  "comparison": "v0 (no rollout) vs v1 (rollout-aware training)",
+  "date": "2026-04-08",
+  "summary": {
+    "one_step_mse": {
+      "v0": 1.469018,
+      "v1": 1.270252,
+      "delta": -0.198766,
+      "improvement": "-13.5%"
+    },
+    "twelve_step_mse": {
+      "v0": 1.726476,
+      "v1": 1.558269,
+      "delta": -0.168207,
+      "improvement": "-9.7%"
+    },
+    "surprise_mean": {
+      "v0": 1.663774,
+      "v1": 1.504176,
+      "delta": -0.159598,
+      "improvement": "-9.6%"
+    },
+    "rollout_stability": {
+      "v0_steps_5_to_12_range": 0.110169,
+      "v1_steps_5_to_12_range": 0.045512,
+      "note": "v1 rollout plateaus by step 5 (range 0.046), v0 keeps drifting (range 0.110)"
+    }
+  },
+  "diagnostics": {
+    "embedding_norms": {
+      "mean": 13.939,
+      "std": 5.599,
+      "note": "High norm mean (13.9) explains why zero baseline wins MSE — zero vector is far from embeddings, but so are predictions. The L2 distance to zero is dominated by the norm bias."
+    },
+    "cosine_similarity": {
+      "v1_model": 0.0961,
+      "copy_last": 0.0721,
+      "mean_context": 0.0910,
+      "note": "Low absolute cossim (0.096) is expected — embeddings are high-dimensional (192-d), random vectors have ~0 cossim. Model beats copy-last by 33%."
+    },
+    "residual_cosine": {
+      "v1_model_delta_cossim": 0.6411,
+      "mean_delta_cossim": 0.5592,
+      "improvement": "+14.7%",
+      "note": "This is the key metric — predicting the direction of temporal change. 0.641 is strong for unconditional prediction. v0 num_preds=6 got 0.577."
+    }
+  },
+  "key_findings": [
+    "v1 one-step MSE improved 13.5% (1.469 -> 1.270)",
+    "v1 rollout curve stabilizes by step 5, v0 keeps drifting through step 12",
+    "v1 step 5-12 range is 0.046 vs v0's 0.110 — 2.4x more stable rollouts",
+    "v1 surprise std increased (0.924 -> 1.156) — better discrimination between easy/hard trajectories",
+    "v1 delta cosine 0.641 vs v0's 0.577 — 11.1% improvement in temporal direction prediction",
+    "Zero baseline (MSE 1.163) still beats model — explained by embedding norm bias (mean=13.9)"
+  ],
+  "open_issues": [
+    "Zero baseline outperforms in MSE — embedding mean norm is 13.9, creating trivial bias. Consider centering embeddings.",
+    "v1 vs mean-context gap narrows to ~0.4% by step 12 — model advantage fades at long horizons",
+    "Need per-regime breakdown to confirm v1 improves across all scene types"
+  ]
+}

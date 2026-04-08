@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from dataset import load_norm_stats
 
 CACHE_DIR = Path(__file__).parent / "cache"
-CHECKPOINT = "/workspace/data/lewm_rf_epoch_99_numpreds6_object.ckpt"
+DEFAULT_CHECKPOINT = "/workspace/data/lewm_rf_epoch_99_numpreds6_object.ckpt"
 NORM_STATS = "/workspace/data/norm_stats.json"
 BATCH = 128
 
@@ -53,16 +53,22 @@ def cache_split(name, model, norm_mean, norm_std):
 
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--checkpoint", default=DEFAULT_CHECKPOINT, help="Path to world model object checkpoint")
+    parser.add_argument("--norm_stats", default=NORM_STATS, help="Path to norm_stats.json")
+    args = parser.parse_args()
+
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     print("=== Stage 2: Caching embeddings ===")
 
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-    print(f"Loading model on {DEVICE}...")
-    model = torch.load(CHECKPOINT, map_location=DEVICE, weights_only=False)
+    print(f"Loading model from {args.checkpoint} on {DEVICE}...")
+    model = torch.load(args.checkpoint, map_location=DEVICE, weights_only=False)
     model.to(DEVICE)
     model.requires_grad_(False)
 
-    stats = load_norm_stats(NORM_STATS)
+    stats = load_norm_stats(args.norm_stats)
     norm_mean = torch.tensor(stats["mean"], dtype=torch.float32).view(1, 1, 2, 1, 1).to(DEVICE)
     norm_std = torch.tensor(stats["std"], dtype=torch.float32).view(1, 1, 2, 1, 1).to(DEVICE)
 

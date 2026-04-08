@@ -1,0 +1,26 @@
+{
+  "model": "lewm_rf_epoch_99_numpreds6",
+  "description": "RF-LeWM v0 — single-step prediction only, no rollout loss",
+  "date": "2026-04-08",
+  "checkpoint": "/workspace/data/lewm_rf_epoch_99_numpreds6_object.ckpt",
+  "test_set": "/workspace/data/test.h5 (2999 trajectories)",
+  "eval_rf": {
+    "one_step_mse": 1.469018,
+    "surprise_mean": 1.663774,
+    "surprise_std": 0.924407,
+    "rollout_error": {
+      "step_1": 1.469018,
+      "step_2": 1.656720,
+      "step_3": 1.656081,
+      "step_4": 1.578665,
+      "step_5": 1.616307,
+      "step_6": 1.667910,
+      "step_7": 1.668321,
+      "step_8": 1.708485,
+      "step_9": 1.765988,
+      "step_10": 1.721367,
+      "step_11": 1.729950,
+      "step_12": 1.726476
+    }
+  }
+}

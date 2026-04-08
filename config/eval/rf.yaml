@@ -5,7 +5,7 @@ seed: 42
 policy: lewm_rf  # checkpoint name relative to $STABLEWM_HOME, without _object.ckpt
 
 data:
-  test_path: /Users/guynachshon/Documents/ozlabs/labs/ChangShuoRadioData/data/lewm/processed/test.h5
+  test_path: ${oc.env:RF_DATA_DIR,/workspace/data}/test.h5
   history_size: 3
   normalize: True
 
