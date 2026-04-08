@@ -26,7 +26,7 @@ def cache_split(name, model, norm_mean, norm_std):
     with h5py.File(src, "r") as fin:
         obs_raw = torch.from_numpy(fin["observations"][()]).float()  # [N, 16, 256, 51, 2]
     obs = obs_raw.permute(0, 1, 4, 2, 3)  # [N, 16, 2, 256, 51]
-    obs = (obs - norm_mean) / norm_std
+    obs = (obs - norm_mean.cpu()) / norm_std.cpu()
     N = obs.shape[0]
     print(f"  {name}: {N} trajectories")
 
