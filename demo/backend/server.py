@@ -27,6 +27,8 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from dataset import load_norm_stats
+from render import render_frame
+from imagination_service import get_pipeline, get_init_error
 
 # ---------------------------------------------------------------------------
 # Config
@@ -49,15 +51,17 @@ model = None
 norm_mean = None
 norm_std = None
 test_data = None
+test_data_raw = None  # Raw [N, 16, 256, 51, 2] for imagination pipeline
 source_ids = None
 scene_meta = None
 pca_model = None
 pca_background = None
+imagination_cache = {}  # LRU-like cache for imagination results
 
 
 @app.on_event("startup")
 def load_everything():
-    global model, norm_mean, norm_std, test_data, source_ids, scene_meta
+    global model, norm_mean, norm_std, test_data, test_data_raw, source_ids, scene_meta
     global pca_model, pca_background
 
     print("Loading model...")
@@ -73,11 +77,19 @@ def load_everything():
     print("Loading test data...")
     with h5py.File(TEST_H5_PATH, "r") as f:
         raw = torch.from_numpy(f["observations"][()]).float()
+        test_data_raw = raw  # Keep raw [N, 16, 256, 51, 2] for imagination pipeline
         test_data = raw.permute(0, 1, 4, 2, 3)  # (N, 16, 2, 256, 51)
         test_data = (test_data - norm_mean) / norm_std
         ids_raw = f["source_ids"][()]
         source_ids = [s.decode() if isinstance(s, bytes) else str(s) for s in ids_raw]
     print(f"  Loaded {test_data.shape[0]} trajectories")
+
+    # Try loading imagination pipeline (non-blocking — degrades gracefully)
+    pipeline = get_pipeline()
+    if pipeline:
+        print("  Imagination pipeline available")
+    else:
+        print(f"  Imagination pipeline not available: {get_init_error() or 'missing checkpoints'}")
 
     print("Loading scene metadata...")
     with open(METADATA_PATH) as f:
@@ -182,6 +194,17 @@ class InjectRequest(BaseModel):
     perturbation_type: str = "noise_burst"
     inject_step: int = 8
     strength: float = 3.0
+
+class ImaginePerturbRequest(BaseModel):
+    trajectory_id: int
+    perturbation_type: str = "noise_burst"
+    perturb_at_step: int = 8
+    context_len: int = 4
+    strength: float = 3.0
+    freq_center: int = 128
+    bandwidth: int = 10
+    duration: int = 4
+    shift_bins: int = 20
 
 
 # ---------------------------------------------------------------------------
@@ -292,6 +315,94 @@ def inject(req: InjectRequest):
         "surprise_perturbed": surprise_perturbed,
         "surprise_ratio": ratio,
         "detected": ratio > 1.2,
+    }
+
+
+@app.get("/imagine/{traj_id}")
+def imagine(traj_id: int, context_len: int = 4):
+    """Run imagination pipeline: ground truth vs imagined spectrograms."""
+    pipeline = get_pipeline()
+    if pipeline is None:
+        raise HTTPException(503, f"Imagination pipeline not available: {get_init_error()}")
+    if traj_id < 0 or traj_id >= test_data_raw.shape[0]:
+        raise HTTPException(404, f"Trajectory {traj_id} not found")
+
+    # Check cache
+    cache_key = (traj_id, context_len)
+    if cache_key in imagination_cache:
+        return imagination_cache[cache_key]
+
+    obs = test_data_raw[traj_id]  # (16, 256, 51, 2)
+    result = pipeline.imagine(obs, context_len=context_len)
+
+    # Render all frames as base64 PNG
+    gt_frames = [render_frame(f.numpy()) for f in result["ground_truth_spectrograms"]]
+    im_frames = [render_frame(f.numpy()) for f in result["imagined_spectrograms"]]
+
+    response = {
+        "trajectory_id": traj_id,
+        "context_len": context_len,
+        "ground_truth_frames": gt_frames,
+        "imagined_frames": im_frames,
+        "surprise_scores": result["surprise_scores"].tolist(),
+    }
+
+    # Cache (max 50 entries)
+    if len(imagination_cache) > 50:
+        oldest = next(iter(imagination_cache))
+        del imagination_cache[oldest]
+    imagination_cache[cache_key] = response
+
+    return response
+
+
+@app.post("/imagine_perturbed")
+def imagine_perturbed(req: ImaginePerturbRequest):
+    """Compare unperturbed vs perturbed imagination."""
+    pipeline = get_pipeline()
+    if pipeline is None:
+        raise HTTPException(503, f"Imagination pipeline not available: {get_init_error()}")
+    if req.trajectory_id < 0 or req.trajectory_id >= test_data_raw.shape[0]:
+        raise HTTPException(404, f"Trajectory {req.trajectory_id} not found")
+
+    sys.path.insert(0, str(PROJECT_ROOT / "mae"))
+    from perturbations import (noise_burst, signal_injection, signal_dropout,
+                               frequency_shift, temporal_reversal)
+
+    # Build perturbation function from request params
+    ptype = req.perturbation_type
+    if ptype == "noise_burst":
+        pfn = lambda obs, t: noise_burst(obs, t, intensity=req.strength)
+    elif ptype == "signal_injection":
+        pfn = lambda obs, t: signal_injection(obs, t, freq_center=req.freq_center,
+                                               bandwidth=req.bandwidth, power=req.strength,
+                                               duration=req.duration)
+    elif ptype == "signal_dropout":
+        pfn = lambda obs, t: signal_dropout(obs, t, duration=req.duration)
+    elif ptype == "frequency_shift":
+        pfn = lambda obs, t: frequency_shift(obs, t, shift_bins=req.shift_bins)
+    elif ptype == "temporal_reversal":
+        pfn = lambda obs, t: temporal_reversal(obs, t, min(t + req.duration, 16))
+    else:
+        raise HTTPException(400, f"Unknown perturbation: {ptype}")
+
+    obs = test_data_raw[req.trajectory_id]
+    result = pipeline.imagine_perturbed(obs, pfn, req.perturb_at_step,
+                                         context_len=req.context_len)
+
+    # Render frames
+    unp_frames = [render_frame(f.numpy()) for f in result["unperturbed"]["imagined_spectrograms"]]
+    pert_frames = [render_frame(f.numpy()) for f in result["perturbed"]["imagined_spectrograms"]]
+
+    return {
+        "trajectory_id": req.trajectory_id,
+        "perturbation_type": ptype,
+        "unperturbed_frames": unp_frames,
+        "perturbed_frames": pert_frames,
+        "surprise_normal": result["unperturbed"]["surprise_scores"].tolist(),
+        "surprise_perturbed": result["perturbed"]["surprise_scores"].tolist(),
+        "surprise_delta": result["surprise_delta"].tolist(),
+        "detected": result["detection"],
     }
 
 

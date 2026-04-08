@@ -22,7 +22,6 @@ from einops import rearrange
 sys.path.insert(0, str(Path(__file__).parent))
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from mae import build_mae
 from train_bridge import LatentBridge
 from perturbations import noise_burst, signal_injection, signal_dropout, frequency_shift, temporal_reversal
 from dataset import load_norm_stats
@@ -31,7 +30,7 @@ from dataset import load_norm_stats
 class RFWorldModelImagination:
     """End-to-end pipeline for visualizing world model predictions."""
 
-    def __init__(self, wm_checkpoint, mae_checkpoint, bridge_checkpoint,
+    def __init__(self, wm_checkpoint, bridge_checkpoint,
                  norm_stats_path, mae_norm_stats_path, device=None):
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -46,19 +45,13 @@ class RFWorldModelImagination:
         self.wm_mean = torch.tensor(wm_stats["mean"], dtype=torch.float32).view(1, 2, 1, 1).to(self.device)
         self.wm_std = torch.tensor(wm_stats["std"], dtype=torch.float32).view(1, 2, 1, 1).to(self.device)
 
-        # Load MAE
-        print(f"Loading MAE from {mae_checkpoint}...")
-        self.mae = build_mae().to(self.device)
-        self.mae.load_state_dict(torch.load(mae_checkpoint, map_location=self.device, weights_only=True))
-        self.mae.requires_grad_(False)
-
-        # Load bridge
+        # Load bridge (direct spectrogram decoder, no MAE needed)
         print(f"Loading bridge from {bridge_checkpoint}...")
-        self.bridge = LatentBridge(wm_dim=192, mae_dim=384, num_patches=272).to(self.device)
+        self.bridge = LatentBridge().to(self.device)
         self.bridge.load_state_dict(torch.load(bridge_checkpoint, map_location=self.device, weights_only=True))
         self.bridge.requires_grad_(False)
 
-        # Load MAE normalization stats (for log-magnitude)
+        # Load normalization stats for log-magnitude
         with open(mae_norm_stats_path) as f:
             mae_stats = json.load(f)
         self.logmag_min = mae_stats["min"]
@@ -97,7 +90,7 @@ class RFWorldModelImagination:
         return emb
 
     def _embedding_to_spectrogram(self, emb):
-        """Convert world model embedding to spectrogram via bridge + MAE decoder.
+        """Convert world model embedding to spectrogram via bridge.
 
         Args:
             emb: (N, 192) embeddings
@@ -105,8 +98,7 @@ class RFWorldModelImagination:
             spectrograms: (N, 256, 51) normalized [0, 1]
         """
         with torch.no_grad():
-            tokens = self.bridge(emb)          # (N, 272, 256)
-            specs = self.mae.decode(tokens)    # (N, 256, 51)
+            specs = self.bridge(emb)  # (N, 256, 51)
         return specs.clamp(0, 1)
 
     @torch.no_grad()
@@ -206,7 +198,6 @@ def smoke_test(args):
     # Load pipeline
     pipeline = RFWorldModelImagination(
         wm_checkpoint=args.wm_ckpt,
-        mae_checkpoint=args.mae_ckpt,
         bridge_checkpoint=args.bridge_ckpt,
         norm_stats_path=args.wm_norm_stats,
         mae_norm_stats_path=args.mae_norm_stats,
@@ -281,7 +272,6 @@ def smoke_test(args):
 def main():
     parser = argparse.ArgumentParser(description="Imagination pipeline smoke test")
     parser.add_argument("--wm_ckpt", default="/workspace/data/lewm_rf_epoch_99_numpreds6_object.ckpt")
-    parser.add_argument("--mae_ckpt", default="mae/mae_best.ckpt")
     parser.add_argument("--bridge_ckpt", default="mae/bridge_best.ckpt")
     parser.add_argument("--wm_norm_stats", default="/workspace/data/norm_stats.json")
     parser.add_argument("--mae_norm_stats", default="mae/cache/norm_stats.json")

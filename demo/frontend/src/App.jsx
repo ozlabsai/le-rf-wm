@@ -3,6 +3,7 @@ import { api } from "./api/client";
 import SpectrogramViewer from "./components/SpectrogramViewer";
 import LatentSpace from "./components/LatentSpace";
 import SurpriseTimeline from "./components/SurpriseTimeline";
+import ImaginationPanel from "./components/ImaginationPanel";
 import "./theme.css";
 
 const CURATOR_PICKS = [
@@ -18,6 +19,9 @@ export default function App() {
   const [trajectoryData, setTrajectoryData] = useState(null);
   const [prediction, setPrediction] = useState(null);
   const [injection, setInjection] = useState(null);
+  const [imagineResult, setImagineResult] = useState(null);
+  const [imagineLoading, setImagineLoading] = useState(false);
+  const [imagineError, setImagineError] = useState(null);
   const [pcaBackground, setPcaBackground] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -40,6 +44,8 @@ export default function App() {
     setLoading(true);
     setError(null);
     setInjection(null);
+    setImagineResult(null);
+    setImagineError(null);
     try {
       const [traj, pred] = await Promise.all([
         api.trajectory(id),
@@ -49,6 +55,12 @@ export default function App() {
       setTrajectoryData(traj);
       setPrediction(pred);
       setCurrentStep(0);
+
+      // Fire imagination request (non-blocking — UI shows immediately)
+      setImagineLoading(true);
+      api.imagine(id).then(setImagineResult).catch(e => {
+        setImagineError(e.message);
+      }).finally(() => setImagineLoading(false));
     } catch (e) {
       setError(e.message);
     } finally {
@@ -176,10 +188,10 @@ export default function App() {
         </div>
       )}
 
-      {/* Three-panel layout */}
+      {/* Four-panel layout */}
       {prediction && !loading && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-md)", flex: 1, minHeight: 0 }}>
-          {/* Top row: Spectrogram + Latent Space */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-md)", flex: 1, minHeight: 0, overflow: "auto" }}>
+          {/* Row 1: Spectrogram + Imagination */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--gap-md)" }}>
             <SpectrogramViewer
               magnitude={trajectoryData?.magnitude}
@@ -189,6 +201,17 @@ export default function App() {
               playing={playing}
               onPlayPause={() => setPlaying(p => !p)}
             />
+            <ImaginationPanel
+              imagineResult={imagineResult}
+              currentStep={currentStep}
+              onStepChange={setCurrentStep}
+              loading={imagineLoading}
+              error={imagineError}
+            />
+          </div>
+
+          {/* Row 2: Latent Space + Surprise Timeline */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--gap-md)" }}>
             <LatentSpace
               pcaActual={prediction?.pca_actual}
               pcaPredicted={prediction?.pca_predicted}
@@ -196,16 +219,14 @@ export default function App() {
               currentStep={currentStep}
               deltaCosines={prediction?.delta_cosines}
             />
+            <SurpriseTimeline
+              surpriseScores={prediction?.surprise_scores}
+              injectionResult={injection}
+              onInject={handleInject}
+              loading={injecting}
+              trajectoryId={trajectoryId}
+            />
           </div>
-
-          {/* Bottom: Surprise Timeline */}
-          <SurpriseTimeline
-            surpriseScores={prediction?.surprise_scores}
-            injectionResult={injection}
-            onInject={handleInject}
-            loading={injecting}
-            trajectoryId={trajectoryId}
-          />
         </div>
       )}
 
@@ -232,7 +253,7 @@ export default function App() {
         display: "flex", justifyContent: "space-between",
         fontSize: 11, color: "var(--text-muted)", fontFamily: "var(--font-mono)",
       }}>
-        <span>RF-LeWM v0 — 16.4M params — Residual JEPA</span>
+        <span>RF-LeWM v1 — 16.4M params — Residual JEPA + MAE Imagination</span>
         <span>
           <a href="https://huggingface.co/OzLabs/RF-LeWM-v0" target="_blank" rel="noreferrer"
              style={{ color: "var(--accent)", textDecoration: "none" }}>Model</a>

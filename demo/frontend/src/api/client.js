@@ -32,4 +32,11 @@ export const api = {
       }),
     }),
   pcaBackground: () => request("/pca_background"),
+  imagine: (trajectoryId, contextLen = 4) =>
+    request(`/imagine/${trajectoryId}?context_len=${contextLen}`),
+  imaginePerturbed: (params) =>
+    request("/imagine_perturbed", {
+      method: "POST",
+      body: JSON.stringify(params),
+    }),
 };

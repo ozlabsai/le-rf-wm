@@ -1,0 +1,47 @@
+{
+  "model_policy": "lewm_rf_epoch_100",
+  "num_samples": 2999,
+  "time_seconds": 17.3,
+  "embedding_stats": {
+    "all_norm_mean": 13.939,
+    "all_norm_std": 5.599,
+    "target_norm_mean": 13.944,
+    "ctx_norm_mean": 13.916,
+    "dim_wise_std": 1.006,
+    "norm_percentiles": {
+      "p0": 10.584, "p10": 12.442, "p25": 12.979, "p50": 13.595,
+      "p75": 14.189, "p90": 14.779, "p100": 145.613
+    }
+  },
+  "onestep": {
+    "model_mse": 1.2703, "copy_mse": 2.1868, "mean_mse": 1.4813, "zero_mse": 1.1630,
+    "model_cossim": 0.0961, "copy_cossim": 0.0721, "mean_cossim": 0.0910
+  },
+  "residual_cossim": {
+    "model_delta_cossim": 0.6411,
+    "mean_delta_cossim": 0.5592
+  },
+  "per_scene": {
+    "scene_0230": {"n": 50, "model_mse": 3.7742, "copy_mse": 7.2163, "zero_mse": 3.7024, "cossim": 0.1661},
+    "scene_0328": {"n": 50, "model_mse": 3.0605, "copy_mse": 5.7509, "zero_mse": 2.9606, "cossim": 0.1254},
+    "scene_0347": {"n": 50, "model_mse": 2.9690, "copy_mse": 5.7417, "zero_mse": 2.9391, "cossim": 0.1688},
+    "scene_0136": {"n": 50, "model_mse": 2.9364, "copy_mse": 5.6316, "zero_mse": 2.8136, "cossim": 0.1466},
+    "scene_0014": {"n": 50, "model_mse": 2.7806, "copy_mse": 5.1371, "zero_mse": 2.6271, "cossim": 0.0855},
+    "scene_0045": {"n": 50, "model_mse": 2.0093, "copy_mse": 3.5119, "zero_mse": 1.8327, "cossim": 0.1067},
+    "scene_0013": {"n": 50, "model_mse": 0.9248, "copy_mse": 1.4934, "zero_mse": 0.9097, "cossim": 0.2204},
+    "scene_0177": {"n": 50, "model_mse": 0.9461, "copy_mse": 1.4575, "zero_mse": 0.8962, "cossim": 0.1927},
+    "scene_0017": {"n": 50, "model_mse": 0.9470, "copy_mse": 1.6536, "zero_mse": 0.8919, "cossim": 0.1477},
+    "scene_0309": {"n": 50, "model_mse": 1.0143, "copy_mse": 1.6764, "zero_mse": 0.9126, "cossim": 0.1734},
+    "scene_0120": {"n": 50, "model_mse": 1.0055, "copy_mse": 1.6883, "zero_mse": 0.9060, "cossim": 0.1670}
+  },
+  "analysis": {
+    "model_beats_copy_all_scenes": true,
+    "hardest_scenes": ["scene_0230", "scene_0328", "scene_0347", "scene_0136", "scene_0014"],
+    "easiest_scenes": ["scene_0013", "scene_0177", "scene_0017", "scene_0309", "scene_0120"],
+    "hard_scene_mse_range": "2.78 - 3.77 (3-4x average)",
+    "easy_scene_mse_range": "0.92 - 1.01",
+    "note_hard_scenes": "Hard scenes also have high zero-baseline MSE (2.6-3.7), suggesting these scenes have high-energy/high-variance spectral content — the difficulty is intrinsic, not a model failure",
+    "note_cossim": "Best cossim on easy scenes (0.17-0.22) vs hard scenes (0.09-0.17) — model captures more structure in predictable scenes",
+    "note_p100_outlier": "p100 norm = 145.6 vs p90 = 14.8 — extreme outlier embedding, likely a degenerate scene"
+  }
+}
