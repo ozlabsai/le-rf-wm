@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #0A0B0E; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #0A0B0E; font-family: Arial, sans-serif;
+  display: flex; flex-direction: column;
+}
+.header {
+  margin: 22pt 50pt 0 50pt;
+  padding-bottom: 6pt;
+  border-bottom: 1px solid #1E2028;
+}
+.body { margin: 6pt 50pt; }
+</style>
+</head>
+<body>
+<div class="header">
+  <p style="font-family: Courier New; font-size: 10pt; color: #E8520A; letter-spacing: 1.5pt; margin-bottom: 4pt;">07</p>
+  <h2 style="font-size: 22pt; color: #E8E9ED; font-weight: 600;">MAE Decoder Pipeline</h2>
+</div>
+<div class="body">
+  <p style="font-size: 12pt; color: #8B8D97; margin-bottom: 12pt; line-height: 1.4;">Goal: visualize what the world model "imagines" the RF scene will look like.</p>
+  <div style="background: #13151A; border: 1px solid #1E2028; border-radius: 4pt; padding: 12pt; margin-bottom: 12pt;">
+    <p style="font-family: Courier New; font-size: 9pt; color: #55576A; margin-bottom: 6pt;">PIPELINE</p>
+    <p style="font-family: Courier New; font-size: 10pt; color: #E8E9ED; line-height: 1.7;">Observation -> <span style="color: #E8520A;">WM Encoder</span> -> embedding -> <span style="color: #E8520A;">WM Predictor</span> -> predicted embedding</p>
+    <p style="font-family: Courier New; font-size: 10pt; color: #E8E9ED; line-height: 1.7;">predicted embedding -> <span style="color: #E8520A;">Bridge</span> -> MAE tokens -> <span style="color: #E8520A;">MAE Decoder</span> -> spectrogram</p>
+  </div>
+  <div style="display: flex; gap: 14pt;">
+    <div style="background: #13151A; border: 1px solid #1E2028; border-radius: 4pt; padding: 12pt; flex: 1;">
+      <p style="font-family: Courier New; font-size: 9pt; color: #E8520A; margin-bottom: 4pt;">MAE ENCODER</p>
+      <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97; line-height: 1.6;">8-layer transformer</p>
+      <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97; line-height: 1.6;">384-dim, 8 heads</p>
+      <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97; line-height: 1.6;">272 patch tokens</p>
+    </div>
+    <div style="background: #13151A; border: 1px solid #1E2028; border-radius: 4pt; padding: 12pt; flex: 1;">
+      <p style="font-family: Courier New; font-size: 9pt; color: #E8520A; margin-bottom: 4pt;">MAE DECODER</p>
+      <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97; line-height: 1.6;">6-layer transformer</p>
+      <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97; line-height: 1.6;">192-dim, 6 heads</p>
+      <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97; line-height: 1.6;">48 pixels per patch</p>
+    </div>
+    <div style="background: #13151A; border: 1px solid #2A7A4B; border-radius: 4pt; padding: 12pt; flex: 1;">
+      <p style="font-family: Courier New; font-size: 9pt; color: #2A7A4B; margin-bottom: 4pt;">RESULT</p>
+      <p style="font-family: Courier New; font-size: 18pt; color: #E8E9ED; font-weight: 700; margin-bottom: 2pt;">0.999</p>
+      <p style="font-size: 8pt; color: #8B8D97;">Val SSIM (reconstruction)</p>
+      <p style="font-family: Courier New; font-size: 8pt; color: #55576A; margin-top: 3pt;">17M total params</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

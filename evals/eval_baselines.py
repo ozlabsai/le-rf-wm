@@ -16,6 +16,7 @@ import stable_worldmodel as swm
 import torch
 from pathlib import Path
 
+import sys; sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
 from dataset import RFSpectralDataset, load_norm_stats
 
 

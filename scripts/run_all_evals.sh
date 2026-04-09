@@ -20,19 +20,19 @@ echo "Results will be saved to ${RUN_DIR}"
 echo ""
 
 echo "=== 1/4: Baselines ==="
-python eval_baselines.py --data_path "$DATA_PATH" --model_policy "$POLICY" --output_dir "$RUN_DIR" 2>&1 | tee "${RUN_DIR}/baselines.txt"
+python evals/eval_baselines.py --data_path "$DATA_PATH" --model_policy "$POLICY" --output_dir "$RUN_DIR" 2>&1 | tee "${RUN_DIR}/baselines.txt"
 
 echo ""
 echo "=== 2/4: Diagnostics ==="
-python eval_diagnostics.py --data_path "$DATA_PATH" --model_policy "$POLICY" --output_dir "$RUN_DIR" 2>&1 | tee "${RUN_DIR}/diagnostics.txt"
+python evals/eval_diagnostics.py --data_path "$DATA_PATH" --model_policy "$POLICY" --output_dir "$RUN_DIR" 2>&1 | tee "${RUN_DIR}/diagnostics.txt"
 
 echo ""
 echo "=== 3/4: Regimes ==="
-python eval_regimes.py --data_path "$DATA_PATH" --model_policy "$POLICY" --output_dir "$RUN_DIR" 2>&1 | tee "${RUN_DIR}/regimes.txt"
+python evals/eval_regimes.py --data_path "$DATA_PATH" --model_policy "$POLICY" --output_dir "$RUN_DIR" 2>&1 | tee "${RUN_DIR}/regimes.txt"
 
 echo ""
 echo "=== 4/4: Surprise ==="
-python eval_surprise.py --data_path "$DATA_PATH" --model_policy "$POLICY" --output_dir "$RUN_DIR" 2>&1 | tee "${RUN_DIR}/surprise.txt"
+python evals/eval_surprise.py --data_path "$DATA_PATH" --model_policy "$POLICY" --output_dir "$RUN_DIR" 2>&1 | tee "${RUN_DIR}/surprise.txt"
 
 echo ""
 echo "All results saved to ${RUN_DIR}/"

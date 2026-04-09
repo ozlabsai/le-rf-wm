@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #0A0B0E; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #0A0B0E; font-family: Arial, sans-serif;
+  display: flex; flex-direction: column;
+}
+</style>
+</head>
+<body>
+<div style="margin: 24pt 50pt 0 50pt; padding-bottom: 6pt; border-bottom: 1px solid #1E2028;">
+  <p style="font-family: Courier New; font-size: 10pt; color: #E8520A; margin-bottom: 4pt;">04</p>
+  <h2 style="font-size: 20pt; color: #E8E9ED; font-weight: 600;">v0 to v1 Evolution</h2>
+</div>
+<div style="margin: 8pt 50pt; display: flex; gap: 14pt;">
+  <div style="flex: 1;">
+    <div style="background: #13151A; border: 1px solid #1E2028; border-radius: 4pt; padding: 8pt 10pt;">
+      <p style="font-family: Courier New; font-size: 8pt; color: #55576A; margin-bottom: 3pt;">V0: 6 BUGS FIXED</p>
+      <p style="font-family: Courier New; font-size: 7pt; color: #8B8D97; line-height: 1.5;">1. CLS -> mean pool  2. Overlap fix</p>
+      <p style="font-family: Courier New; font-size: 7pt; color: #8B8D97; line-height: 1.5;">3. BN -> LN  4. Var NaN fix</p>
+      <p style="font-family: Courier New; font-size: 7pt; color: #8B8D97; line-height: 1.5;">5. Abs -> residual  6. L2-norm MSE</p>
+    </div>
+  </div>
+  <div style="flex: 1;">
+    <div style="background: #13151A; border: 1px solid #E8520A; border-radius: 4pt; padding: 8pt 10pt;">
+      <p style="font-family: Courier New; font-size: 8pt; color: #E8520A; margin-bottom: 3pt;">V1: ROLLOUT-AWARE TRAINING</p>
+      <p style="font-size: 8pt; color: #8B8D97;">3-step rollout loss, wt 0.5, warmup ep 10</p>
+    </div>
+  </div>
+</div>
+<div style="margin: 4pt 50pt; display: flex; gap: 10pt;">
+  <div style="background: #13151A; border: 1px solid #1E2028; border-radius: 4pt; padding: 8pt; flex: 1; text-align: center;">
+    <p style="font-family: Courier New; font-size: 18pt; color: #E8520A; font-weight: 700;">-13.5%</p>
+    <p style="font-size: 7pt; color: #55576A;">One-step MSE (1.469 -> 1.270)</p>
+  </div>
+  <div style="background: #13151A; border: 1px solid #1E2028; border-radius: 4pt; padding: 8pt; flex: 1; text-align: center;">
+    <p style="font-family: Courier New; font-size: 18pt; color: #E8520A; font-weight: 700;">2.4x</p>
+    <p style="font-size: 7pt; color: #55576A;">Stable rollouts (range 0.110 -> 0.046)</p>
+  </div>
+  <div style="background: #13151A; border: 1px solid #1E2028; border-radius: 4pt; padding: 8pt; flex: 1; text-align: center;">
+    <p style="font-family: Courier New; font-size: 18pt; color: #E8520A; font-weight: 700;">+11.1%</p>
+    <p style="font-size: 7pt; color: #55576A;">Delta cosine (0.577 -> 0.641)</p>
+  </div>
+</div>
+</body>
+</html>

@@ -42,3 +42,21 @@ wandb/
 .env
 .env.*
 !.env.example
+
+# Model checkpoints (large binary files)
+*.ckpt
+lewm-rf/
+
+# Decoder / MAE caches (regenerated)
+decoder/cache/
+mae/cache/
+mae/mae_best.ckpt
+mae/bridge_best.ckpt
+
+# Presentation build artifacts
+presentation/*.pptx
+presentation/~$*
+
+# Demo data (symlinked or copied)
+demo/data/*.ckpt
+demo/data/*.h5

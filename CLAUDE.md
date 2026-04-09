@@ -31,11 +31,11 @@ Config: `config/train/lewm_rf.yaml`. Data paths in `config/train/data/rf.yaml`. 
 
 ### RF Evaluation
 ```bash
-python eval_rf.py policy=lewm_rf              # evaluate checkpoint
-python eval_baselines.py --data_path /path/to/test.h5 --model_policy lewm_rf_epoch_99
-python eval_diagnostics.py --data_path /path/to/test.h5 --model_policy lewm_rf_epoch_99
+python evals/eval_rf.py policy=lewm_rf              # evaluate checkpoint
+python evals/eval_baselines.py --data_path /path/to/test.h5 --model_policy lewm_rf_epoch_99
+python evals/eval_diagnostics.py --data_path /path/to/test.h5 --model_policy lewm_rf_epoch_99
 ```
-`eval_rf.py` — rollout error and surprise scores. `eval_baselines.py` — comparison against copy-last/mean/zero baselines. `eval_diagnostics.py` — embedding space analysis, cosine similarity, per-regime breakdown.
+`evals/eval_rf.py` — rollout error and surprise scores. `evals/eval_baselines.py` — comparison against copy-last/mean/zero baselines. `evals/eval_diagnostics.py` — embedding space analysis, cosine similarity, per-regime breakdown.
 
 ### Robotics Training (original)
 ```bash
@@ -46,7 +46,7 @@ Config: `config/train/lewm.yaml`.
 
 ### Robotics Evaluation (original)
 ```bash
-python eval.py --config-name=pusht.yaml policy=pusht/lewm
+python evals/eval.py --config-name=pusht.yaml policy=pusht/lewm
 ```
 Policy path is relative to `$STABLEWM_HOME`, without `_object.ckpt` suffix.
 

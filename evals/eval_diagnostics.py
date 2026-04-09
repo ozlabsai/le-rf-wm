@@ -20,6 +20,7 @@ import torch
 import torch.nn.functional as F
 from einops import rearrange
 
+import sys; sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
 from dataset import RFSpectralDataset, load_norm_stats
 
 

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #0A0B0E; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #0A0B0E; font-family: Arial, sans-serif;
+  display: flex; flex-direction: column;
+}
+.header {
+  margin: 24pt 50pt 0 50pt;
+  padding-bottom: 6pt;
+  border-bottom: 1px solid #1E2028;
+}
+.body { margin: 8pt 50pt; }
+</style>
+</head>
+<body>
+<div class="header">
+  <p style="font-family: Courier New; font-size: 10pt; color: #E8520A; letter-spacing: 1.5pt; margin-bottom: 4pt;">03</p>
+  <h2 style="font-size: 22pt; color: #E8E9ED; font-weight: 600;">Data Pipeline</h2>
+</div>
+<div class="body">
+  <div style="display: flex; gap: 16pt; margin-bottom: 14pt;">
+    <div style="background: #13151A; border: 1px solid #1E2028; border-radius: 4pt; padding: 10pt 12pt; flex: 1;">
+      <p style="font-family: Courier New; font-size: 20pt; color: #E8520A; font-weight: 700; margin-bottom: 2pt;">221K</p>
+      <p style="font-size: 9pt; color: #55576A;">total frames</p>
+    </div>
+    <div style="background: #13151A; border: 1px solid #1E2028; border-radius: 4pt; padding: 10pt 12pt; flex: 1;">
+      <p style="font-family: Courier New; font-size: 20pt; color: #E8520A; font-weight: 700; margin-bottom: 2pt;">13,841</p>
+      <p style="font-size: 9pt; color: #55576A;">train trajectories</p>
+    </div>
+    <div style="background: #13151A; border: 1px solid #1E2028; border-radius: 4pt; padding: 10pt 12pt; flex: 1;">
+      <p style="font-family: Courier New; font-size: 20pt; color: #E8520A; font-weight: 700; margin-bottom: 2pt;">8</p>
+      <p style="font-size: 9pt; color: #55576A;">RF regimes</p>
+    </div>
+    <div style="background: #13151A; border: 1px solid #1E2028; border-radius: 4pt; padding: 10pt 12pt; flex: 1;">
+      <p style="font-family: Courier New; font-size: 20pt; color: #E8520A; font-weight: 700; margin-bottom: 2pt;">16</p>
+      <p style="font-size: 9pt; color: #55576A;">steps / trajectory</p>
+    </div>
+  </div>
+  <div style="display: flex; gap: 16pt;">
+    <div style="flex: 1;">
+      <p style="font-family: Courier New; font-size: 9pt; color: #E8520A; margin-bottom: 6pt;">OBSERVATION FORMAT</p>
+      <div style="background: #13151A; border: 1px solid #1E2028; border-radius: 4pt; padding: 10pt 12pt;">
+        <p style="font-family: Courier New; font-size: 10pt; color: #E8E9ED; margin-bottom: 6pt;">[256 freq x 51 time x 2 ch]</p>
+        <p style="font-size: 9pt; color: #8B8D97; line-height: 1.4;">STFT magnitude, I/Q channels</p>
+        <p style="font-size: 9pt; color: #8B8D97; line-height: 1.4;">HDF5 format, float16 storage</p>
+        <p style="font-size: 9pt; color: #8B8D97; line-height: 1.4;">Per-channel mean/std normalization</p>
+      </div>
+    </div>
+    <div style="flex: 1;">
+      <p style="font-family: Courier New; font-size: 9pt; color: #E8520A; margin-bottom: 6pt;">RF REGIMES</p>
+      <div style="background: #13151A; border: 1px solid #1E2028; border-radius: 4pt; padding: 8pt 12pt;">
+        <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97; line-height: 1.6;">quiet</p>
+        <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97; line-height: 1.6;">dense | bursty | ramp_up</p>
+        <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97; line-height: 1.6;">interference_event</p>
+        <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97; line-height: 1.6;">correlated_alternating</p>
+        <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97; line-height: 1.6;">correlated_leader_follower</p>
+        <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97; line-height: 1.6;">random</p>
+      </div>
+    </div>
+    <div style="flex: 1;">
+      <p style="font-family: Courier New; font-size: 9pt; color: #E8520A; margin-bottom: 6pt;">SPLITS</p>
+      <div style="background: #13151A; border: 1px solid #1E2028; border-radius: 4pt; padding: 8pt 12pt;">
+        <p style="font-family: Courier New; font-size: 9pt; color: #E8E9ED; line-height: 1.8;">Train: <span style="color: #8B8D97;">13,841</span></p>
+        <p style="font-family: Courier New; font-size: 9pt; color: #E8E9ED; line-height: 1.8;">Val:   <span style="color: #8B8D97;">2,938</span></p>
+        <p style="font-family: Courier New; font-size: 9pt; color: #E8E9ED; line-height: 1.8;">Test:  <span style="color: #8B8D97;">2,999</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

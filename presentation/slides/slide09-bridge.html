@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #0A0B0E; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #0A0B0E; font-family: Arial, sans-serif;
+  display: flex; flex-direction: column;
+}
+.header {
+  margin: 20pt 50pt 0 50pt;
+  padding-bottom: 6pt;
+  border-bottom: 1px solid #1E2028;
+}
+.body { margin: 4pt 50pt; }
+</style>
+</head>
+<body>
+<div class="header">
+  <p style="font-family: Courier New; font-size: 10pt; color: #E8520A; letter-spacing: 1.5pt; margin-bottom: 4pt;">08</p>
+  <h2 style="font-size: 22pt; color: #E8E9ED; font-weight: 600;">Bridge Challenge</h2>
+</div>
+<div class="body">
+  <div style="background: #13151A; border-left: 3pt solid #C9302C; padding: 8pt 14pt; border-radius: 0 4pt 4pt 0; margin-bottom: 6pt;">
+    <p style="font-size: 11pt; color: #E8E9ED; line-height: 1.4;">Mean pooling collapses <span style="color: #E8520A;">272 tokens x 192-dim</span> into one <span style="color: #E8520A;">192-dim</span> vector. Spatial info is destroyed.</p>
+  </div>
+  <p style="font-family: Courier New; font-size: 9pt; color: #E8520A; margin-bottom: 6pt;">THREE ARCHITECTURES TESTED — ALL HIT SAME CEILING</p>
+  <div style="display: flex; gap: 10pt; margin-bottom: 6pt;">
+    <div style="background: #13151A; border: 1px solid #C9302C; border-radius: 4pt; padding: 8pt 10pt; flex: 1;">
+      <p style="font-size: 10pt; color: #E8E9ED; margin-bottom: 2pt;"><b>MLP</b></p>
+      <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97;">107M params</p>
+      <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97;">192->512->1024->272x384</p>
+      <p style="font-family: Courier New; font-size: 13pt; color: #C9302C; margin-top: 4pt;">SSIM 0.31</p>
+    </div>
+    <div style="background: #13151A; border: 1px solid #C9302C; border-radius: 4pt; padding: 8pt 10pt; flex: 1;">
+      <p style="font-size: 10pt; color: #E8E9ED; margin-bottom: 2pt;"><b>Cross-Attention</b></p>
+      <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97;">5.9M params</p>
+      <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97;">Learned queries -> pixels</p>
+      <p style="font-family: Courier New; font-size: 13pt; color: #C9302C; margin-top: 4pt;">SSIM 0.32</p>
+    </div>
+    <div style="background: #13151A; border: 1px solid #C9302C; border-radius: 4pt; padding: 8pt 10pt; flex: 1;">
+      <p style="font-size: 10pt; color: #E8E9ED; margin-bottom: 2pt;"><b>CrossAttn + MAE</b></p>
+      <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97;">4.4M params</p>
+      <p style="font-family: Courier New; font-size: 8pt; color: #8B8D97;">Queries -> MAE decoder</p>
+      <p style="font-family: Courier New; font-size: 13pt; color: #C9302C; margin-top: 4pt;">SSIM 0.32</p>
+    </div>
+  </div>
+  <div style="background: #13151A; border: 1px solid #E8520A; border-radius: 4pt; padding: 10pt 14pt;">
+    <p style="font-family: Courier New; font-size: 9pt; color: #E8520A; margin-bottom: 3pt;">SOLUTION: PATCH-LEVEL BRIDGE</p>
+    <p style="font-size: 10pt; color: #E8E9ED;">Use pre-pooling patch tokens (272 x 192) instead of mean-pooled vector. Preserves spatial information.</p>
+  </div>
+</div>
+</body>
+</html>
