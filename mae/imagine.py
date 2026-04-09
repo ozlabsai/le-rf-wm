@@ -117,7 +117,7 @@ class RFWorldModelImagination:
         return p
 
     @torch.no_grad()
-    def imagine(self, observations, context_len=4):
+    def imagine(self, observations, context_len=3):
         """Run imagination pipeline on a single trajectory.
 
         Args:
@@ -165,7 +165,7 @@ class RFWorldModelImagination:
         }
 
     @torch.no_grad()
-    def imagine_perturbed(self, observations, perturbation_fn, perturb_at_step, context_len=4):
+    def imagine_perturbed(self, observations, perturbation_fn, perturb_at_step, context_len=3):
         """Compare unperturbed vs perturbed imagination.
 
         Args:
@@ -228,7 +228,7 @@ def smoke_test(args):
 
     # Run imagine
     print("\nRunning imagine()...")
-    result = pipeline.imagine(obs, context_len=4)
+    result = pipeline.imagine(obs, context_len=3)
     print(f"  ground_truth_spectrograms: {result['ground_truth_spectrograms'].shape}")
     print(f"  imagined_spectrograms:     {result['imagined_spectrograms'].shape}")
     print(f"  surprise_scores:           {result['surprise_scores'].shape}")
@@ -243,7 +243,7 @@ def smoke_test(args):
         obs,
         perturbation_fn=lambda o, t: noise_burst(o, t, intensity=3.0),
         perturb_at_step=8,
-        context_len=4,
+        context_len=3,
     )
     print(f"  detection: {perturb_result['detection']}")
     print(f"  surprise_delta max: {perturb_result['surprise_delta'].abs().max():.4f}")
