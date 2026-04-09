@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#0A0B0E;font-family:Arial,sans-serif;color:#E8E9ED;display:flex;flex-direction:column;overflow:hidden;}
+</style></head><body>
+<div style="padding:20pt 28pt 0 28pt;">
+  <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;">05</p>
+  <h1 style="font-size:19pt;font-weight:700;margin-top:4pt;">Dataset</h1>
+</div>
+<div style="padding:14pt 28pt 36pt 28pt;flex:1;display:flex;flex-direction:column;gap:12pt;">
+  <div style="display:flex;gap:10pt;">
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;text-align:center;">
+      <p style="font-family:'Courier New',monospace;font-size:16pt;color:#E8520A;font-weight:700;">221K</p>
+      <p style="font-size:7pt;color:#55576A;">total frames</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;text-align:center;">
+      <p style="font-family:'Courier New',monospace;font-size:16pt;color:#E8520A;font-weight:700;">13,841</p>
+      <p style="font-size:7pt;color:#55576A;">train trajectories</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;text-align:center;">
+      <p style="font-family:'Courier New',monospace;font-size:16pt;color:#E8520A;font-weight:700;">8</p>
+      <p style="font-size:7pt;color:#55576A;">RF regimes</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;text-align:center;">
+      <p style="font-family:'Courier New',monospace;font-size:16pt;color:#E8520A;font-weight:700;">16</p>
+      <p style="font-size:7pt;color:#55576A;">steps / trajectory</p>
+    </div>
+  </div>
+  <div style="display:flex;gap:12pt;flex:1;">
+    <div style="flex:0 0 38%;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#E8520A;font-weight:700;margin-bottom:6pt;">OBSERVATION</p>
+      <p style="font-family:'Courier New',monospace;font-size:9pt;color:#E8E9ED;line-height:1.6;">[256 x 51 x 2]</p>
+      <p style="font-size:8pt;color:#55576A;margin-top:4pt;line-height:1.4;">256 frequency bins<br>51 time bins<br>2 channels (I/Q)</p>
+      <p style="font-size:8pt;color:#8B8D97;margin-top:8pt;line-height:1.4;">STFT spectrogram. Global per-channel normalization from train split.</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#E8520A;font-weight:700;margin-bottom:6pt;">8 RF REGIMES</p>
+      <div style="display:flex;flex-wrap:wrap;gap:4pt;">
+        <div style="background:#1A1C22;border-radius:3pt;padding:3pt 7pt;"><p style="font-family:'Courier New',monospace;font-size:7pt;color:#8B8D97;">wifi_idle</p></div>
+        <div style="background:#1A1C22;border-radius:3pt;padding:3pt 7pt;"><p style="font-family:'Courier New',monospace;font-size:7pt;color:#8B8D97;">wifi_active</p></div>
+        <div style="background:#1A1C22;border-radius:3pt;padding:3pt 7pt;"><p style="font-family:'Courier New',monospace;font-size:7pt;color:#8B8D97;">bluetooth</p></div>
+        <div style="background:#1A1C22;border-radius:3pt;padding:3pt 7pt;"><p style="font-family:'Courier New',monospace;font-size:7pt;color:#8B8D97;">lte_down</p></div>
+        <div style="background:#1A1C22;border-radius:3pt;padding:3pt 7pt;"><p style="font-family:'Courier New',monospace;font-size:7pt;color:#8B8D97;">lte_up</p></div>
+        <div style="background:#1A1C22;border-radius:3pt;padding:3pt 7pt;"><p style="font-family:'Courier New',monospace;font-size:7pt;color:#8B8D97;">mixed_signals</p></div>
+        <div style="background:#1A1C22;border-radius:3pt;padding:3pt 7pt;"><p style="font-family:'Courier New',monospace;font-size:7pt;color:#8B8D97;">noise_floor</p></div>
+        <div style="background:#1A1C22;border-radius:3pt;padding:3pt 7pt;"><p style="font-family:'Courier New',monospace;font-size:7pt;color:#8B8D97;">interference</p></div>
+      </div>
+      <p style="font-size:8pt;color:#55576A;margin-top:8pt;line-height:1.4;">Pre-split by source scene. Train/val/test in separate HDF5 files. No random splitting needed.</p>
+    </div>
+  </div>
+</div>
+</body></html>

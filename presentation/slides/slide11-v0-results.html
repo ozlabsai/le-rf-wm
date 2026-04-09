@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#0A0B0E;font-family:Arial,sans-serif;color:#E8E9ED;display:flex;flex-direction:column;overflow:hidden;}
+</style></head><body>
+<div style="padding:20pt 28pt 0 28pt;">
+  <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;">10</p>
+  <h1 style="font-size:19pt;font-weight:700;margin-top:4pt;">v0 Results: First Working Model</h1>
+</div>
+<div style="padding:14pt 28pt 36pt 28pt;flex:1;display:flex;flex-direction:column;gap:12pt;">
+  <div style="background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt 14pt;">
+    <p style="font-size:7pt;color:#55576A;letter-spacing:1pt;margin-bottom:8pt;">ONE-STEP ROLLOUT MSE (LOWER IS BETTER)</p>
+    <div style="display:flex;gap:0;">
+      <div style="flex:1;padding:8pt 0;border-right:1pt solid #1E2028;text-align:center;">
+        <p style="font-family:'Courier New',monospace;font-size:18pt;color:#E8520A;font-weight:700;">1.47</p>
+        <p style="font-size:7pt;color:#E8520A;font-weight:700;margin-top:2pt;">MODEL</p>
+      </div>
+      <div style="flex:1;padding:8pt 0;border-right:1pt solid #1E2028;text-align:center;">
+        <p style="font-family:'Courier New',monospace;font-size:18pt;color:#8B8D97;">2.19</p>
+        <p style="font-size:7pt;color:#55576A;margin-top:2pt;">COPY-LAST</p>
+      </div>
+      <div style="flex:1;padding:8pt 0;border-right:1pt solid #1E2028;text-align:center;">
+        <p style="font-family:'Courier New',monospace;font-size:18pt;color:#8B8D97;">1.48</p>
+        <p style="font-size:7pt;color:#55576A;margin-top:2pt;">MEAN-CTX</p>
+      </div>
+      <div style="flex:1;padding:8pt 0;text-align:center;">
+        <p style="font-family:'Courier New',monospace;font-size:18pt;color:#D4A017;">1.16</p>
+        <p style="font-size:7pt;color:#D4A017;margin-top:2pt;">ZERO</p>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:12pt;">
+    <div style="flex:1;background:#13151A;border:1pt solid #2A7A4B;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#2A7A4B;font-weight:700;margin-bottom:4pt;">WINS</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.5;">Beats copy-last baseline by 33%. Near parity with mean-context. Embeddings are non-collapsed, diverse.</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #D4A017;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#D4A017;font-weight:700;margin-bottom:4pt;">PROBLEM</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.5;">Loses to zero baseline. Predicting "nothing changes" beats our model. Embeddings have a norm bias the zero vector exploits.</p>
+    </div>
+  </div>
+  <div style="background:#1A1C22;border-left:3pt solid #D4A017;padding:10pt 14pt;border-radius:0 4pt 4pt 0;">
+    <p style="font-size:9pt;color:#E8E9ED;font-style:italic;line-height:1.4;">"Model beats copy-last but loses to trivial baselines — learning something, but not real dynamics yet."</p>
+  </div>
+</div>
+</body></html>

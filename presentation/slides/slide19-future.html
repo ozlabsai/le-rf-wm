@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#0A0B0E;font-family:Arial,sans-serif;color:#E8E9ED;display:flex;flex-direction:column;overflow:hidden;}
+</style></head><body>
+<div style="padding:20pt 28pt 0 28pt;">
+  <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;">18</p>
+  <h1 style="font-size:19pt;font-weight:700;margin-top:4pt;">Next Steps</h1>
+</div>
+<div style="padding:14pt 28pt 36pt 28pt;flex:1;display:flex;flex-direction:column;gap:10pt;">
+  <div style="display:flex;gap:10pt;">
+    <div style="flex:1;background:#13151A;border:1pt solid #E8520A;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#E8520A;font-weight:700;margin-bottom:6pt;">TOKEN-LEVEL PREDICTION</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.4;">Predict 272 patch tokens instead of 1 mean-pooled vector. Preserves spatial structure. Enables structural anomaly detection.</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #E8520A;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#E8520A;font-weight:700;margin-bottom:6pt;">EMA TARGET ENCODER</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.4;">Exponential moving average of encoder weights for target embeddings. Smoother targets, less training instability.</p>
+    </div>
+  </div>
+  <div style="display:flex;gap:10pt;">
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#D4A017;font-weight:700;margin-bottom:6pt;">STRUCTURAL PERTURBATIONS</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.4;">Token-level prediction should enable detection of signal injection, dropout, and frequency reversal that mean-pooled model misses.</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#D4A017;font-weight:700;margin-bottom:6pt;">EMBEDDING CENTERING</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.4;">Center embeddings around origin to eliminate zero baseline advantage. Norm bias is a known, fixable artifact.</p>
+    </div>
+  </div>
+  <div style="background:#1A1C22;border-left:2pt solid #E8520A;padding:8pt 10pt;border-radius:0 4pt 4pt 0;">
+    <p style="font-size:9pt;color:#E8E9ED;line-height:1.4;">Priority order: token-level prediction > structural perturbation tests > EMA encoder > centering</p>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#0A0B0E;font-family:Arial,sans-serif;color:#E8E9ED;display:flex;flex-direction:column;overflow:hidden;}
+</style></head><body>
+<div style="padding:20pt 28pt 0 28pt;">
+  <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;">08</p>
+  <h1 style="font-size:19pt;font-weight:700;margin-top:4pt;">Five More Collapse Mechanisms</h1>
+</div>
+<div style="padding:10pt 28pt 36pt 28pt;flex:1;display:flex;flex-direction:column;gap:5pt;">
+  <div style="background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:7pt 10pt;display:flex;align-items:flex-start;gap:8pt;">
+    <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;font-weight:700;flex-shrink:0;width:14pt;">1</p>
+    <div style="flex:1;">
+      <p style="font-size:8pt;color:#E8E9ED;font-weight:700;">BatchNorm &rarr; LayerNorm</p>
+      <p style="font-size:7pt;color:#8B8D97;line-height:1.3;">BN running stats diverge between train/eval with random-init encoders. LN has no running stats.</p>
+    </div>
+  </div>
+  <div style="background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:7pt 10pt;display:flex;align-items:flex-start;gap:8pt;">
+    <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;font-weight:700;flex-shrink:0;width:14pt;">2</p>
+    <div style="flex:1;">
+      <p style="font-size:8pt;color:#E8E9ED;font-weight:700;">Overlapping slices &rarr; Non-overlapping context/target</p>
+      <p style="font-size:7pt;color:#8B8D97;line-height:1.3;">Original LeWM uses overlapping slices (works for action-conditioned). For unconditional: predictor just copies the overlap. Trivial shortcut.</p>
+    </div>
+  </div>
+  <div style="background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:7pt 10pt;display:flex;align-items:flex-start;gap:8pt;">
+    <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;font-weight:700;flex-shrink:0;width:14pt;">3</p>
+    <div style="flex:1;">
+      <p style="font-size:8pt;color:#E8E9ED;font-weight:700;">Absolute prediction &rarr; Residual prediction (&Delta;z)</p>
+      <p style="font-size:7pt;color:#8B8D97;line-height:1.3;">Predicting z directly allows memorizing scene identity. Predicting &Delta;z = z<sub>t+k</sub> - z<sub>t</sub> forces learning temporal dynamics.</p>
+    </div>
+  </div>
+  <div style="background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:7pt 10pt;display:flex;align-items:flex-start;gap:8pt;">
+    <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;font-weight:700;flex-shrink:0;width:14pt;">4</p>
+    <div style="flex:1;">
+      <p style="font-size:8pt;color:#E8E9ED;font-weight:700;">Raw MSE &rarr; L2-normalized MSE</p>
+      <p style="font-size:7pt;color:#8B8D97;line-height:1.3;">Raw MSE allows magnitude shrinkage: predict near-zero vectors, minimize loss trivially. L2-norm forces directional accuracy.</p>
+    </div>
+  </div>
+  <div style="background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:7pt 10pt;display:flex;align-items:flex-start;gap:8pt;">
+    <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;font-weight:700;flex-shrink:0;width:14pt;">5</p>
+    <div style="flex:1;">
+      <p style="font-size:8pt;color:#E8E9ED;font-weight:700;">Variance loss NaN &rarr; sqrt(var + eps) hinge</p>
+      <p style="font-size:7pt;color:#8B8D97;line-height:1.3;">VICReg variance regularizer hit NaN at var=0 due to sqrt(0). Added eps and hinge loss to stabilize.</p>
+    </div>
+  </div>
+  <div style="background:#1A1C22;border-left:2pt solid #D4A017;padding:6pt 10pt;border-radius:0 4pt 4pt 0;">
+    <p style="font-size:8pt;color:#8B8D97;">Each fix addresses a specific collapse or shortcut mechanism. All were necessary.</p>
+  </div>
+</div>
+</body></html>

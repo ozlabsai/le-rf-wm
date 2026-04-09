@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#0A0B0E;font-family:Arial,sans-serif;color:#E8E9ED;display:flex;flex-direction:column;overflow:hidden;}
+</style></head><body>
+<div style="padding:20pt 28pt 0 28pt;">
+  <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;">11</p>
+  <h1 style="font-size:19pt;font-weight:700;margin-top:4pt;">v1: Rollout-Aware Training</h1>
+</div>
+<div style="padding:14pt 28pt 36pt 28pt;flex:1;display:flex;flex-direction:column;gap:12pt;">
+  <div style="background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;">
+    <p style="font-size:9pt;color:#E8E9ED;line-height:1.4;">3-step rollout loss teaches temporal composition. Instead of one-step teacher forcing, backpropagate through multi-step autoregressive prediction.</p>
+  </div>
+  <div style="display:flex;gap:10pt;">
+    <div style="flex:1;background:#13151A;border:1pt solid #2A7A4B;border-radius:4pt;padding:14pt;text-align:center;">
+      <p style="font-family:'Courier New',monospace;font-size:20pt;color:#2A7A4B;font-weight:700;">-13.5%</p>
+      <p style="font-size:8pt;color:#8B8D97;margin-top:4pt;">One-step MSE reduction</p>
+      <p style="font-size:7pt;color:#55576A;margin-top:2pt;">vs v0 baseline</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #2A7A4B;border-radius:4pt;padding:14pt;text-align:center;">
+      <p style="font-family:'Courier New',monospace;font-size:20pt;color:#2A7A4B;font-weight:700;">2.4x</p>
+      <p style="font-size:8pt;color:#8B8D97;margin-top:4pt;">Stable rollout steps</p>
+      <p style="font-size:7pt;color:#55576A;margin-top:2pt;">before divergence</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #2A7A4B;border-radius:4pt;padding:14pt;text-align:center;">
+      <p style="font-family:'Courier New',monospace;font-size:20pt;color:#2A7A4B;font-weight:700;">+11.1%</p>
+      <p style="font-size:8pt;color:#8B8D97;margin-top:4pt;">Delta cosine similarity</p>
+      <p style="font-size:7pt;color:#55576A;margin-top:2pt;">directional accuracy</p>
+    </div>
+  </div>
+  <div style="background:#1A1C22;border-left:2pt solid #E8520A;padding:8pt 10pt;border-radius:0 4pt 4pt 0;">
+    <p style="font-size:8pt;color:#8B8D97;line-height:1.4;"><span style="color:#E8E9ED;font-weight:700;">Key insight:</span> Rollout training teaches the predictor that its own outputs will be its future inputs. This self-consistency constraint improves both one-step and multi-step accuracy.</p>
+  </div>
+</div>
+</body></html>

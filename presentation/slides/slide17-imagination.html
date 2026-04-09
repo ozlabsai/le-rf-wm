@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#0A0B0E;font-family:Arial,sans-serif;color:#E8E9ED;display:flex;flex-direction:column;overflow:hidden;}
+</style></head><body>
+<div style="padding:20pt 28pt 0 28pt;">
+  <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;">16</p>
+  <h1 style="font-size:19pt;font-weight:700;margin-top:4pt;">Decoder: Visualizing Imagination</h1>
+</div>
+<div style="padding:12pt 28pt 36pt 28pt;flex:1;display:flex;flex-direction:column;gap:10pt;">
+  <div style="background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:8pt 10pt;">
+    <p style="font-size:7pt;color:#55576A;letter-spacing:1pt;margin-bottom:6pt;">PIPELINE</p>
+    <div style="display:flex;align-items:center;gap:4pt;">
+      <div style="background:#1A1C22;border:1pt solid #1E2028;border-radius:3pt;padding:4pt 6pt;text-align:center;">
+        <p style="font-size:7pt;color:#8B8D97;">192-dim</p>
+        <p style="font-size:6pt;color:#55576A;">pooled emb</p>
+      </div>
+      <p style="font-size:8pt;color:#55576A;">&rarr;</p>
+      <div style="background:#1A1C22;border:1pt solid #E8520A;border-radius:3pt;padding:4pt 6pt;text-align:center;">
+        <p style="font-size:7pt;color:#E8520A;">Bridge</p>
+        <p style="font-size:6pt;color:#55576A;">1&rarr;272 tokens</p>
+      </div>
+      <p style="font-size:8pt;color:#55576A;">&rarr;</p>
+      <div style="background:#1A1C22;border:1pt solid #E8520A;border-radius:3pt;padding:4pt 6pt;text-align:center;">
+        <p style="font-size:7pt;color:#E8520A;">MAE Decoder</p>
+        <p style="font-size:6pt;color:#55576A;">17M params</p>
+      </div>
+      <p style="font-size:8pt;color:#55576A;">&rarr;</p>
+      <div style="background:#1A1C22;border:1pt solid #2A7A4B;border-radius:3pt;padding:4pt 6pt;text-align:center;">
+        <p style="font-size:7pt;color:#2A7A4B;">Spectrogram</p>
+        <p style="font-size:6pt;color:#55576A;">[2,256,51]</p>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:10pt;">
+    <div style="flex:1;background:#13151A;border:1pt solid #2A7A4B;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#2A7A4B;font-weight:700;margin-bottom:4pt;">MAE DECODER (ORACLE)</p>
+      <p style="font-family:'Courier New',monospace;font-size:12pt;color:#2A7A4B;font-weight:700;">0.999</p>
+      <p style="font-size:7pt;color:#55576A;margin-top:2pt;">SSIM from full patch tokens</p>
+      <p style="font-size:8pt;color:#8B8D97;margin-top:4pt;">MAE trained on 272 patch tokens reconstructs spectrograms near-perfectly.</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #D4A017;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#D4A017;font-weight:700;margin-bottom:4pt;">BRIDGE BOTTLENECK</p>
+      <p style="font-family:'Courier New',monospace;font-size:12pt;color:#D4A017;font-weight:700;">0.31</p>
+      <p style="font-size:7pt;color:#55576A;margin-top:2pt;">SSIM through bridge</p>
+      <p style="font-size:8pt;color:#8B8D97;margin-top:4pt;">Mean pooling loses spatial info. 3 bridge architectures all plateau at same SSIM.</p>
+    </div>
+  </div>
+  <div style="background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:8pt 10pt;">
+    <p style="font-size:8pt;color:#E8520A;font-weight:700;margin-bottom:4pt;">CURRENT: PATCH-LEVEL BRIDGE</p>
+    <p style="font-size:8pt;color:#8B8D97;line-height:1.4;">Bypass mean pooling entirely. Use 272 patch tokens directly with MAE decoder. Preserves spatial structure for both prediction and visualization.</p>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#0A0B0E;font-family:Arial,sans-serif;color:#E8E9ED;display:flex;flex-direction:column;overflow:hidden;}
+</style></head><body>
+<div style="padding:20pt 28pt 0 28pt;">
+  <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;">12</p>
+  <h1 style="font-size:19pt;font-weight:700;margin-top:4pt;">v1 Evaluation</h1>
+</div>
+<div style="padding:14pt 28pt 36pt 28pt;flex:1;display:flex;flex-direction:column;gap:12pt;">
+  <div style="display:flex;gap:10pt;">
+    <div style="flex:1;background:#13151A;border:1pt solid #2A7A4B;border-radius:4pt;padding:12pt;text-align:center;">
+      <p style="font-family:'Courier New',monospace;font-size:22pt;color:#2A7A4B;font-weight:700;">56/56</p>
+      <p style="font-size:8pt;color:#8B8D97;margin-top:4pt;">Test scenes where v1<br>beats copy-last</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #E8520A;border-radius:4pt;padding:12pt;text-align:center;">
+      <p style="font-family:'Courier New',monospace;font-size:22pt;color:#E8520A;font-weight:700;">0.641</p>
+      <p style="font-size:8pt;color:#8B8D97;margin-top:4pt;">Delta cosine similarity<br>(directional accuracy)</p>
+    </div>
+  </div>
+  <div style="display:flex;gap:10pt;">
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#E8520A;font-weight:700;margin-bottom:4pt;">DELTA COSINE &gt; 0.5</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.5;">First model that predicts the <span style="color:#E8E9ED;">direction</span> of temporal change better than mean-context baseline. The model captures which way embeddings are moving.</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#E8520A;font-weight:700;margin-bottom:4pt;">ROLLOUT STABILITY</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.5;">Rollout error curve plateaus by step 5. Model predictions stabilize rather than diverging — autoregressive predictions remain bounded.</p>
+    </div>
+  </div>
+  <div style="background:#1A1C22;border-left:2pt solid #2A7A4B;padding:8pt 10pt;border-radius:0 4pt 4pt 0;">
+    <p style="font-size:9pt;color:#E8E9ED;line-height:1.4;">v1 is the first RF world model that consistently outperforms all non-trivial baselines across every test scene.</p>
+  </div>
+</div>
+</body></html>

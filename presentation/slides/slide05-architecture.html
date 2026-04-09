@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#0A0B0E;font-family:Arial,sans-serif;color:#E8E9ED;display:flex;flex-direction:column;overflow:hidden;}
+</style></head><body>
+<div style="padding:20pt 28pt 0 28pt;">
+  <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;">04</p>
+  <h1 style="font-size:19pt;font-weight:700;margin-top:4pt;">Architecture</h1>
+</div>
+<div style="display:flex;padding:14pt 28pt 36pt 28pt;flex:1;gap:14pt;">
+  <div style="flex:0 0 48%;display:flex;flex-direction:column;gap:6pt;">
+    <div style="background:#13151A;border:1pt solid #E8520A;border-radius:4pt;padding:10pt;">
+      <p style="font-size:9pt;color:#E8520A;font-weight:700;margin-bottom:6pt;">SpectrogramViT Encoder</p>
+      <ul style="list-style:none;padding:0;">
+        <li><p style="font-size:8pt;color:#8B8D97;line-height:1.6;">Conv2d patch embed: <span style="font-family:'Courier New',monospace;color:#E8E9ED;">16&times;3</span> kernel</p></li>
+        <li><p style="font-size:8pt;color:#8B8D97;line-height:1.6;"><span style="font-family:'Courier New',monospace;color:#E8E9ED;">272</span> patches per frame</p></li>
+        <li><p style="font-size:8pt;color:#8B8D97;line-height:1.6;">Factored positional embeddings (freq + time)</p></li>
+        <li><p style="font-size:8pt;color:#8B8D97;line-height:1.6;"><span style="font-family:'Courier New',monospace;color:#E8E9ED;">12</span>-layer transformer, dim <span style="font-family:'Courier New',monospace;color:#E8E9ED;">192</span></p></li>
+        <li><p style="font-size:8pt;color:#8B8D97;line-height:1.6;">Mean pooling &rarr; <span style="font-family:'Courier New',monospace;color:#E8E9ED;">192</span>-dim output</p></li>
+      </ul>
+    </div>
+    <div style="background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:8pt 10pt;">
+      <p style="font-size:7pt;color:#55576A;letter-spacing:1pt;margin-bottom:4pt;">REGULARIZATION</p>
+      <ul style="list-style:none;padding:0;">
+        <li><p style="font-size:8pt;color:#8B8D97;line-height:1.5;">SIGReg (Epps-Pulley Gaussian)</p></li>
+        <li><p style="font-size:8pt;color:#8B8D97;line-height:1.5;">VICReg variance hinge</p></li>
+        <li><p style="font-size:8pt;color:#8B8D97;line-height:1.5;">L2-normalized prediction loss</p></li>
+      </ul>
+    </div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;gap:6pt;">
+    <div style="background:#13151A;border:1pt solid #E8520A;border-radius:4pt;padding:10pt;">
+      <p style="font-size:9pt;color:#E8520A;font-weight:700;margin-bottom:6pt;">ARPredictor</p>
+      <ul style="list-style:none;padding:0;">
+        <li><p style="font-size:8pt;color:#8B8D97;line-height:1.6;"><span style="font-family:'Courier New',monospace;color:#E8E9ED;">6</span>-layer transformer</p></li>
+        <li><p style="font-size:8pt;color:#8B8D97;line-height:1.6;">Unconditional (no action input)</p></li>
+        <li><p style="font-size:8pt;color:#8B8D97;line-height:1.6;">Standard <span style="font-family:'Courier New',monospace;color:#E8E9ED;">Block</span> (not AdaLN)</p></li>
+        <li><p style="font-size:8pt;color:#8B8D97;line-height:1.6;">Autoregressive rollout</p></li>
+        <li><p style="font-size:8pt;color:#8B8D97;line-height:1.6;">Residual prediction: &Delta;z = z&#770; - z</p></li>
+      </ul>
+    </div>
+    <div style="background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:8pt 10pt;">
+      <p style="font-size:7pt;color:#55576A;letter-spacing:1pt;margin-bottom:4pt;">PROJECTORS</p>
+      <ul style="list-style:none;padding:0;">
+        <li><p style="font-size:8pt;color:#8B8D97;line-height:1.5;">Online: LayerNorm + 2-layer MLP</p></li>
+        <li><p style="font-size:8pt;color:#8B8D97;line-height:1.5;">Target: stop-gradient detached</p></li>
+      </ul>
+    </div>
+    <div style="background:#1A1C22;border-radius:4pt;padding:8pt 10pt;text-align:center;margin-top:auto;">
+      <p style="font-family:'Courier New',monospace;font-size:14pt;color:#E8520A;font-weight:700;">16.4M</p>
+      <p style="font-size:8pt;color:#55576A;">total parameters</p>
+    </div>
+  </div>
+</div>
+</body></html>

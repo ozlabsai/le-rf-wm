@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#0A0B0E;font-family:Arial,sans-serif;color:#E8E9ED;display:flex;flex-direction:column;overflow:hidden;}
+</style></head><body>
+<div style="padding:20pt 28pt 0 28pt;">
+  <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;">15</p>
+  <h1 style="font-size:19pt;font-weight:700;margin-top:4pt;">Anomaly Detection via Surprise</h1>
+</div>
+<div style="padding:14pt 28pt 36pt 28pt;flex:1;display:flex;flex-direction:column;gap:10pt;">
+  <div style="background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:8pt 10pt;">
+    <p style="font-size:8pt;color:#8B8D97;line-height:1.4;">Surprise = prediction error. If the model predicts well, anomalies should produce high surprise scores.</p>
+  </div>
+  <div style="display:flex;gap:8pt;">
+    <div style="flex:1;background:#13151A;border:1pt solid #2A7A4B;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#2A7A4B;font-weight:700;margin-bottom:6pt;">DETECTED</p>
+      <div style="display:flex;align-items:center;gap:6pt;margin-bottom:4pt;">
+        <p style="font-family:'Courier New',monospace;font-size:14pt;color:#2A7A4B;font-weight:700;">1.66x</p>
+        <p style="font-size:8pt;color:#8B8D97;">surprise ratio</p>
+      </div>
+      <p style="font-size:8pt;color:#E8E9ED;font-weight:700;">Noise burst</p>
+      <p style="font-size:7pt;color:#55576A;margin-top:2pt;">Sudden amplitude increase across all frequencies</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #C9302C;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#C9302C;font-weight:700;margin-bottom:6pt;">NOT DETECTED</p>
+      <ul style="list-style:none;padding:0;">
+        <li style="padding:2pt 0;"><p style="font-size:8pt;color:#8B8D97;">Signal injection <span style="font-family:'Courier New',monospace;color:#55576A;">1.02x</span></p></li>
+        <li style="padding:2pt 0;"><p style="font-size:8pt;color:#8B8D97;">Signal dropout <span style="font-family:'Courier New',monospace;color:#55576A;">0.98x</span></p></li>
+        <li style="padding:2pt 0;"><p style="font-size:8pt;color:#8B8D97;">Frequency reversal <span style="font-family:'Courier New',monospace;color:#55576A;">1.01x</span></p></li>
+      </ul>
+    </div>
+  </div>
+  <div style="background:#1A1C22;border-left:3pt solid #D4A017;padding:10pt 14pt;border-radius:0 4pt 4pt 0;">
+    <p style="font-size:9pt;color:#E8E9ED;font-weight:700;margin-bottom:4pt;">Key Insight</p>
+    <p style="font-size:8pt;color:#8B8D97;line-height:1.5;">Model captures <span style="color:#E8E9ED;">amplitude dynamics</span> but not <span style="color:#E8E9ED;">spatial structure</span>. Mean pooling aggregates all patch information into one vector — local frequency patterns are lost. Structural perturbations (injection, reversal) affect spatial layout, which the pooled representation cannot distinguish.</p>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#0A0B0E;font-family:Arial,sans-serif;color:#E8E9ED;display:flex;flex-direction:column;overflow:hidden;}
+</style></head><body>
+<div style="padding:20pt 28pt 0 28pt;">
+  <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;">02</p>
+  <h1 style="font-size:19pt;font-weight:700;margin-top:4pt;">The Task</h1>
+</div>
+<div style="padding:16pt 28pt 36pt 28pt;flex:1;display:flex;flex-direction:column;gap:14pt;">
+  <div style="background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt 14pt;">
+    <p style="font-size:9pt;color:#8B8D97;margin-bottom:6pt;">Input sequence of spectrogram frames, predict future frames in latent space</p>
+    <div style="display:flex;align-items:center;gap:6pt;margin-bottom:8pt;">
+      <div style="background:#1A1C22;border:1pt solid #1E2028;border-radius:3pt;padding:4pt 8pt;"><p style="font-family:'Courier New',monospace;font-size:9pt;color:#E8E9ED;">x<sub>1</sub></p></div>
+      <div style="background:#1A1C22;border:1pt solid #1E2028;border-radius:3pt;padding:4pt 8pt;"><p style="font-family:'Courier New',monospace;font-size:9pt;color:#E8E9ED;">x<sub>2</sub></p></div>
+      <div style="background:#1A1C22;border:1pt solid #1E2028;border-radius:3pt;padding:4pt 8pt;"><p style="font-family:'Courier New',monospace;font-size:9pt;color:#E8E9ED;">x<sub>3</sub></p></div>
+      <p style="font-size:12pt;color:#E8520A;font-weight:700;">&rarr;</p>
+      <div style="background:#1A1C22;border:1pt solid #E8520A;border-radius:3pt;padding:4pt 8pt;"><p style="font-family:'Courier New',monospace;font-size:9pt;color:#E8520A;">z&#770;<sub>4</sub></p></div>
+      <div style="background:#1A1C22;border:1pt solid #E8520A;border-radius:3pt;padding:4pt 8pt;"><p style="font-family:'Courier New',monospace;font-size:9pt;color:#E8520A;">z&#770;<sub>5</sub></p></div>
+      <div style="background:#1A1C22;border:1pt solid #E8520A;border-radius:3pt;padding:4pt 8pt;"><p style="font-family:'Courier New',monospace;font-size:9pt;color:#E8520A;">z&#770;<sub>6</sub></p></div>
+      <p style="font-size:8pt;color:#55576A;margin-left:4pt;">...</p>
+    </div>
+    <p style="font-size:8pt;color:#55576A;">Latent prediction, not pixel reconstruction</p>
+  </div>
+  <div style="display:flex;gap:12pt;">
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#E8520A;font-weight:700;margin-bottom:6pt;">OBSERVATION FORMAT</p>
+      <p style="font-family:'Courier New',monospace;font-size:9pt;color:#E8E9ED;line-height:1.5;">[T, 2, 256, 51]</p>
+      <p style="font-size:8pt;color:#55576A;margin-top:4pt;">T timesteps, 2 channels (I/Q),<br>256 freq bins, 51 time bins</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#E8520A;font-weight:700;margin-bottom:6pt;">SEQUENCE LENGTH</p>
+      <p style="font-family:'Courier New',monospace;font-size:9pt;color:#E8E9ED;line-height:1.5;">16 steps / trajectory</p>
+      <p style="font-size:8pt;color:#55576A;margin-top:4pt;">Context: first K steps<br>Target: remaining 16-K steps</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#E8520A;font-weight:700;margin-bottom:6pt;">KEY DIFFERENCE</p>
+      <p style="font-size:9pt;color:#E8E9ED;line-height:1.5;">Unconditional</p>
+      <p style="font-size:8pt;color:#55576A;margin-top:4pt;">No actions. RF evolves<br>without agent intervention.</p>
+    </div>
+  </div>
+  <div style="background:#1A1C22;border-left:2pt solid #55576A;padding:6pt 10pt;border-radius:0 4pt 4pt 0;">
+    <p style="font-size:8pt;color:#8B8D97;">STFT spectrogram per frame. Global per-channel normalization from training split.</p>
+  </div>
+</div>
+</body></html>

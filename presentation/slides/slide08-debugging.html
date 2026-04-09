@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#0A0B0E;font-family:Arial,sans-serif;color:#E8E9ED;display:flex;flex-direction:column;overflow:hidden;}
+</style></head><body>
+<div style="padding:20pt 28pt 0 28pt;">
+  <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;">07</p>
+  <h1 style="font-size:19pt;font-weight:700;margin-top:4pt;">Debugging: CLS Token Problem</h1>
+</div>
+<div style="padding:14pt 28pt 36pt 28pt;flex:1;display:flex;flex-direction:column;gap:10pt;">
+  <div style="display:flex;gap:12pt;">
+    <div style="flex:1;background:#13151A;border:1pt solid #C9302C;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#C9302C;font-weight:700;margin-bottom:6pt;">INVESTIGATION</p>
+      <p style="font-family:'Courier New',monospace;font-size:8pt;color:#8B8D97;line-height:1.6;">CLS token std across batch: <span style="color:#C9302C;">0.000</span></p>
+      <p style="font-family:'Courier New',monospace;font-size:8pt;color:#8B8D97;line-height:1.6;">Patch tokens std across batch: <span style="color:#2A7A4B;">0.847</span></p>
+      <p style="font-size:8pt;color:#55576A;margin-top:6pt;">Patches carry information. CLS does not.</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#D4A017;font-weight:700;margin-bottom:6pt;">ROOT CAUSE</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.5;">CLS token at random init is a single shared learned parameter. Identical for every sample in the batch. Zero variance = zero information.</p>
+    </div>
+  </div>
+  <div style="background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;display:flex;align-items:center;gap:12pt;">
+    <div style="flex:1;">
+      <p style="font-size:8pt;color:#C9302C;font-weight:700;margin-bottom:4pt;">BEFORE</p>
+      <p style="font-family:'Courier New',monospace;font-size:8pt;color:#8B8D97;line-height:1.5;">output = CLS_token  # shared param<br>std(output) = 0  # collapsed</p>
+    </div>
+    <p style="font-size:14pt;color:#E8520A;font-weight:700;">&rarr;</p>
+    <div style="flex:1;">
+      <p style="font-size:8pt;color:#2A7A4B;font-weight:700;margin-bottom:4pt;">AFTER</p>
+      <p style="font-family:'Courier New',monospace;font-size:8pt;color:#8B8D97;line-height:1.5;">output = mean(patches)  # per-sample<br>std(output) = 0.847  # diverse</p>
+    </div>
+  </div>
+  <div style="background:#1A1C22;border-left:2pt solid #E8520A;padding:8pt 10pt;border-radius:0 4pt 4pt 0;">
+    <p style="font-size:9pt;color:#E8E9ED;line-height:1.4;">Mean pooling preserves per-sample patch diversity through the transformer. CLS token destroys it at initialization.</p>
+  </div>
+  <p style="font-size:8pt;color:#55576A;">Fix: CLS token pooling &rarr; mean patch pooling. But this was only the first collapse mechanism.</p>
+</div>
+</body></html>

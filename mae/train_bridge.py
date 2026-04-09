@@ -63,41 +63,50 @@ class LatentBridge(nn.Module):
 class PairedPatchDataset(Dataset):
     """Paired dataset: WM patch embeddings + log-magnitude frame.
 
-    Uses HDF5 lazy loading to avoid reading 37GB+ into RAM.
-    Indexes as [traj_idx, frame_idx] into [N, 16, ...] arrays.
+    Loads everything into RAM for fast training. ~37GB for train split
+    but we have 1.5TB RAM so this is fine.
     """
 
     def __init__(self, patch_h5_path, logmag_h5_path, vmin, vmax):
-        self.patch_h5_path = patch_h5_path
-        self.logmag_h5_path = logmag_h5_path
-        # Read shape only — don't keep file handles open (breaks multi-worker)
-        with h5py.File(patch_h5_path, "r") as f:
-            self.N, self.T = f["patch_embeddings"].shape[:2]
-        self.vmin = vmin
-        self.scale = max(vmax - vmin, 1e-8)
-        # Per-worker file handles (opened lazily)
-        self._patch_h5 = None
-        self._logmag_h5 = None
+        import time
+        t0 = time.time()
 
-    def _open(self):
-        if self._patch_h5 is None:
-            self._patch_h5 = h5py.File(self.patch_h5_path, "r")
-            self._logmag_h5 = h5py.File(self.logmag_h5_path, "r")
+        print(f"  Loading patches from {patch_h5_path}...")
+        with h5py.File(patch_h5_path, "r") as f:
+            patches = f["patch_embeddings"]  # [N, 16, 272, 192]
+            N, T = patches.shape[:2]
+            # Load in chunks to show progress
+            chunks = []
+            chunk_size = 500
+            for start in range(0, N, chunk_size):
+                end = min(start + chunk_size, N)
+                chunks.append(patches[start:end])
+                if (start // chunk_size) % 5 == 0:
+                    print(f"    patches: {end}/{N} ({100*end/N:.0f}%)")
+            all_patches = np.concatenate(chunks, axis=0)
+
+        print(f"  Loading logmag from {logmag_h5_path}...")
+        with h5py.File(logmag_h5_path, "r") as f:
+            logmag = f["logmag"][()]  # [N, 16, 256, 51]
+
+        # Flatten trajectory dim
+        self.patches = all_patches.reshape(N * T, 272, 192)
+        logmag_flat = logmag.reshape(N * T, 256, 51).astype(np.float32)
+
+        # Normalize logmag to [0, 1]
+        scale = max(vmax - vmin, 1e-8)
+        self.frames = np.clip((logmag_flat - vmin) / scale, 0.0, 1.0)
+
+        dt = time.time() - t0
+        print(f"  Loaded {len(self.patches)} pairs in {dt:.0f}s")
 
     def __len__(self):
-        return self.N * self.T
+        return len(self.patches)
 
     def __getitem__(self, idx):
-        self._open()
-        traj = idx // self.T
-        frame = idx % self.T
-        patches = self._patch_h5["patch_embeddings"][traj, frame]  # (272, 192)
-        logmag = self._logmag_h5["logmag"][traj, frame]            # (256, 51)
-        # Normalize logmag to [0, 1]
-        logmag = np.clip((logmag - self.vmin) / self.scale, 0.0, 1.0)
         return (
-            torch.from_numpy(patches.astype(np.float32)),      # (272, 192)
-            torch.from_numpy(logmag.astype(np.float32)).unsqueeze(0),  # (1, 256, 51)
+            torch.from_numpy(self.patches[idx].astype(np.float32)),
+            torch.from_numpy(self.frames[idx]).unsqueeze(0),
         )
 
 

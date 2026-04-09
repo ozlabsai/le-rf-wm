@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#0A0B0E;font-family:Arial,sans-serif;color:#E8E9ED;display:flex;flex-direction:column;overflow:hidden;}
+</style></head><body>
+<div style="padding:20pt 28pt 0 28pt;">
+  <p style="font-family:'Courier New',monospace;font-size:8pt;color:#C9302C;">06</p>
+  <h1 style="font-size:19pt;font-weight:700;margin-top:4pt;color:#C9302C;">First Result: Complete Collapse</h1>
+</div>
+<div style="padding:14pt 28pt 36pt 28pt;flex:1;display:flex;flex-direction:column;gap:12pt;">
+  <div style="background:#13151A;border:2pt solid #C9302C;border-radius:4pt;padding:14pt;text-align:center;">
+    <p style="font-size:10pt;color:#C9302C;font-weight:700;margin-bottom:6pt;">ALL EMBEDDINGS IDENTICAL</p>
+    <p style="font-family:'Courier New',monospace;font-size:9pt;color:#8B8D97;line-height:1.6;">std(embeddings) = 0.000<br>cosine_sim(any_pair) = 1.000<br>loss &asymp; 0.000</p>
+  </div>
+  <div style="display:flex;gap:12pt;">
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#C9302C;font-weight:700;margin-bottom:4pt;">WHAT HAPPENED</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.5;">The encoder outputs the exact same vector for every input spectrogram. The predictor trivially copies it. Loss is zero. Nothing is learned.</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#D4A017;font-weight:700;margin-bottom:4pt;">THE TRAP</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.5;">Loss looks good (near zero). Training curves look smooth. But the model has found the ultimate shortcut: ignore the input entirely.</p>
+    </div>
+  </div>
+  <div style="background:#1A1C22;border-left:3pt solid #C9302C;padding:10pt 14pt;border-radius:0 4pt 4pt 0;">
+    <p style="font-size:10pt;color:#E8E9ED;font-style:italic;line-height:1.4;">This is representation collapse — the central failure mode of self-supervised learning without reconstruction.</p>
+    <p style="font-size:8pt;color:#55576A;margin-top:6pt;">Everything that follows is about understanding why this happens and fixing it.</p>
+  </div>
+</div>
+</body></html>

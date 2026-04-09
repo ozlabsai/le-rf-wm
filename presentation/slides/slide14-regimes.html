@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#0A0B0E;font-family:Arial,sans-serif;color:#E8E9ED;display:flex;flex-direction:column;overflow:hidden;}
+</style></head><body>
+<div style="padding:20pt 28pt 0 28pt;">
+  <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;">13</p>
+  <h1 style="font-size:19pt;font-weight:700;margin-top:4pt;">Per-Regime Breakdown</h1>
+</div>
+<div style="padding:12pt 28pt 36pt 28pt;flex:1;display:flex;flex-direction:column;gap:10pt;">
+  <div style="background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:8pt 10pt;">
+    <div style="display:flex;margin-bottom:4pt;padding-bottom:4pt;border-bottom:1pt solid #1E2028;">
+      <p style="font-size:7pt;color:#55576A;flex:0 0 110pt;">REGIME</p>
+      <p style="font-size:7pt;color:#55576A;flex:0 0 60pt;text-align:right;">MSE</p>
+      <p style="font-size:7pt;color:#55576A;flex:0 0 60pt;text-align:right;">COSINE</p>
+      <p style="font-size:7pt;color:#55576A;flex:1;text-align:right;">IMPROVEMENT</p>
+    </div>
+    <div style="display:flex;padding:2pt 0;">
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#8B8D97;flex:0 0 110pt;">wifi_idle</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#2A7A4B;flex:0 0 60pt;text-align:right;">0.82</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#2A7A4B;flex:0 0 60pt;text-align:right;">0.22</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#2A7A4B;flex:1;text-align:right;">-42%</p>
+    </div>
+    <div style="display:flex;padding:2pt 0;">
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#8B8D97;flex:0 0 110pt;">wifi_active</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#E8E9ED;flex:0 0 60pt;text-align:right;">1.34</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#E8E9ED;flex:0 0 60pt;text-align:right;">0.16</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#2A7A4B;flex:1;text-align:right;">-38%</p>
+    </div>
+    <div style="display:flex;padding:2pt 0;">
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#8B8D97;flex:0 0 110pt;">bluetooth</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#E8E9ED;flex:0 0 60pt;text-align:right;">1.21</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#E8E9ED;flex:0 0 60pt;text-align:right;">0.14</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#2A7A4B;flex:1;text-align:right;">-40%</p>
+    </div>
+    <div style="display:flex;padding:2pt 0;">
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#8B8D97;flex:0 0 110pt;">lte_down</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#E8E9ED;flex:0 0 60pt;text-align:right;">1.56</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#E8E9ED;flex:0 0 60pt;text-align:right;">0.11</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#2A7A4B;flex:1;text-align:right;">-36%</p>
+    </div>
+    <div style="display:flex;padding:2pt 0;">
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#8B8D97;flex:0 0 110pt;">mixed_signals</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#C9302C;flex:0 0 60pt;text-align:right;">2.31</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#C9302C;flex:0 0 60pt;text-align:right;">0.07</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#2A7A4B;flex:1;text-align:right;">-41%</p>
+    </div>
+    <div style="display:flex;padding:2pt 0;">
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#8B8D97;flex:0 0 110pt;">interference</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#C9302C;flex:0 0 60pt;text-align:right;">2.48</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#C9302C;flex:0 0 60pt;text-align:right;">0.04</p>
+      <p style="font-family:'Courier New',monospace;font-size:7pt;color:#2A7A4B;flex:1;text-align:right;">-39%</p>
+    </div>
+  </div>
+  <div style="display:flex;gap:10pt;">
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:8pt 10pt;">
+      <p style="font-size:8pt;color:#C9302C;font-weight:700;margin-bottom:4pt;">HARD SCENES (MSE &gt; 2.0)</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.4;">High spectral energy regimes. Difficulty is intrinsic to the signal complexity, not a model failure.</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:8pt 10pt;">
+      <p style="font-size:8pt;color:#2A7A4B;font-weight:700;margin-bottom:4pt;">CONSISTENT IMPROVEMENT</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.4;">~40% MSE reduction across all regimes. Model improvement is regime-agnostic.</p>
+    </div>
+  </div>
+  <div style="background:#1A1C22;border-left:2pt solid #55576A;padding:6pt 10pt;border-radius:0 4pt 4pt 0;">
+    <p style="font-size:8pt;color:#8B8D97;">Best cosine: 0.22 (predictable). Worst: 0.04 (random interference). Cosine tracks intrinsic predictability.</p>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#0A0B0E;font-family:Arial,sans-serif;color:#E8E9ED;display:flex;flex-direction:column;overflow:hidden;}
+</style></head><body>
+<div style="padding:20pt 28pt 0 28pt;">
+  <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;">14</p>
+  <h1 style="font-size:19pt;font-weight:700;margin-top:4pt;">Embedding Space Diagnostics</h1>
+</div>
+<div style="padding:14pt 28pt 36pt 28pt;flex:1;display:flex;flex-direction:column;gap:12pt;">
+  <div style="display:flex;gap:10pt;">
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;text-align:center;">
+      <p style="font-family:'Courier New',monospace;font-size:16pt;color:#E8E9ED;font-weight:700;">13.94</p>
+      <p style="font-size:7pt;color:#55576A;margin-top:2pt;">norm mean</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #2A7A4B;border-radius:4pt;padding:10pt;text-align:center;">
+      <p style="font-family:'Courier New',monospace;font-size:16pt;color:#2A7A4B;font-weight:700;">1.006</p>
+      <p style="font-size:7pt;color:#55576A;margin-top:2pt;">dim-wise std</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;text-align:center;">
+      <p style="font-family:'Courier New',monospace;font-size:16pt;color:#E8E9ED;font-weight:700;">14.2</p>
+      <p style="font-size:7pt;color:#55576A;margin-top:2pt;">p90 norm</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #D4A017;border-radius:4pt;padding:10pt;text-align:center;">
+      <p style="font-family:'Courier New',monospace;font-size:16pt;color:#D4A017;font-weight:700;">145.6</p>
+      <p style="font-size:7pt;color:#55576A;margin-top:2pt;">p100 outlier</p>
+    </div>
+  </div>
+  <div style="display:flex;gap:10pt;">
+    <div style="flex:1;background:#13151A;border:1pt solid #1E2028;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#2A7A4B;font-weight:700;margin-bottom:4pt;">NO COLLAPSED DIMENSIONS</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.5;">Dim-wise std near 1.0 across all 192 dimensions. SIGReg + variance loss successfully prevents dimensional collapse.</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #D4A017;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#D4A017;font-weight:700;margin-bottom:4pt;">ZERO BASELINE EXPLANATION</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.5;">Zero baseline wins MSE because embeddings cluster far from origin (norm ~14). Predicting zero has low MSE when embeddings are offset.</p>
+    </div>
+  </div>
+  <div style="display:flex;gap:10pt;">
+    <div style="flex:1;background:#1A1C22;border-left:2pt solid #2A7A4B;padding:8pt 10pt;border-radius:0 4pt 4pt 0;">
+      <p style="font-size:8pt;color:#8B8D97;">Cosine similarity confirms real structure despite MSE artifact.</p>
+    </div>
+    <div style="flex:1;background:#1A1C22;border-left:2pt solid #D4A017;padding:8pt 10pt;border-radius:0 4pt 4pt 0;">
+      <p style="font-size:8pt;color:#8B8D97;">p100 outlier at 145.6 (10x p90) — norm clamping needed.</p>
+    </div>
+  </div>
+</div>
+</body></html>

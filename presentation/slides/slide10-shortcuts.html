@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:720pt;height:405pt;background:#0A0B0E;font-family:Arial,sans-serif;color:#E8E9ED;display:flex;flex-direction:column;overflow:hidden;}
+</style></head><body>
+<div style="padding:20pt 28pt 0 28pt;">
+  <p style="font-family:'Courier New',monospace;font-size:8pt;color:#E8520A;">09</p>
+  <h1 style="font-size:19pt;font-weight:700;margin-top:4pt;">Loss Functions Define Shortcuts</h1>
+</div>
+<div style="padding:14pt 28pt 36pt 28pt;flex:1;display:flex;flex-direction:column;gap:10pt;">
+  <div style="display:flex;gap:10pt;">
+    <div style="flex:1;background:#13151A;border:1pt solid #C9302C;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#C9302C;font-weight:700;margin-bottom:4pt;">MSE LOSS</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.4;">Allows shrinkage. Predict low-magnitude vectors near zero to minimize error without learning structure.</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #C9302C;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#C9302C;font-weight:700;margin-bottom:4pt;">ABSOLUTE TARGETS</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.4;">Allows memorization. Model learns scene identity (which scene am I in?) rather than temporal change.</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #C9302C;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#C9302C;font-weight:700;margin-bottom:4pt;">OVERLAPPING SLICES</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.4;">Allows copying. When context and target share timesteps, the predictor can echo shared frames.</p>
+    </div>
+  </div>
+  <div style="display:flex;gap:10pt;">
+    <div style="flex:1;background:#13151A;border:1pt solid #2A7A4B;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#2A7A4B;font-weight:700;margin-bottom:4pt;">L2-NORMALIZED MSE</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.4;">Removes shrinkage. Forces directional accuracy regardless of magnitude.</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #2A7A4B;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#2A7A4B;font-weight:700;margin-bottom:4pt;">RESIDUAL TARGETS (&Delta;z)</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.4;">Removes memorization. Must predict temporal change, not scene identity.</p>
+    </div>
+    <div style="flex:1;background:#13151A;border:1pt solid #2A7A4B;border-radius:4pt;padding:10pt;">
+      <p style="font-size:8pt;color:#2A7A4B;font-weight:700;margin-bottom:4pt;">NON-OVERLAPPING</p>
+      <p style="font-size:8pt;color:#8B8D97;line-height:1.4;">Removes copying. Target starts after context ends. No shared frames.</p>
+    </div>
+  </div>
+  <div style="background:#1A1C22;border-left:3pt solid #E8520A;padding:10pt 14pt;border-radius:0 4pt 4pt 0;">
+    <p style="font-size:10pt;color:#E8E9ED;font-style:italic;line-height:1.4;">"Regularization cannot create signal — it can only preserve it."</p>
+    <p style="font-size:8pt;color:#55576A;margin-top:4pt;">Each fix removes a shortcut. The model is forced to learn actual dynamics.</p>
+  </div>
+</div>
+</body></html>
