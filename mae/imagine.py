@@ -100,14 +100,23 @@ class RFWorldModelImagination:
     def _embedding_to_spectrogram(self, emb):
         """Convert world model embedding to spectrogram via bridge + MAE decoder.
 
+        For imagined frames, the input is a predicted 192-dim embedding.
+        The bridge expands it to patch tokens, and the MAE decoder renders pixels.
+
+        Note: this path is quality-limited by mean pooling information loss.
+        Imagined spectrograms will be blurry approximations.
+
         Args:
             emb: (N, 192) embeddings
         Returns:
             spectrograms: (N, 256, 51) normalized [0, 1]
         """
         with torch.no_grad():
-            tokens = self.bridge(emb)  # (N, 272, 384)
-            _, specs = self.mae_decoder(tokens, visible_indices=None)  # (N, 256, 51)
+            # Broadcast embedding to all patch positions
+            # Bridge expects (B, 272, 192) — repeat the embedding for each patch
+            patches = emb.unsqueeze(1).expand(-1, 272, -1)  # (N, 272, 192)
+            mae_tokens = self.bridge(patches)  # (N, 272, 384)
+            _, specs = self.mae_decoder(mae_tokens, visible_indices=None)
         return specs.clamp(0, 1)
 
     @torch.no_grad()

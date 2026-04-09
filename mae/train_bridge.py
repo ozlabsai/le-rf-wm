@@ -1,12 +1,12 @@
-"""Stage 3: Train the projection bridge from world model embeddings to spectrograms.
+"""Stage 3: Train the projection bridge from WM patch embeddings to MAE latent space.
 
-Directly decodes WM embedding [B, 192] -> spectrogram [B, 256, 51] using
-learned patch queries + cross-attention + per-patch pixel prediction.
-No dependency on frozen MAE tokens -- trains end-to-end on reconstruction loss.
+Uses patch-level WM encoder outputs [B, 272, 192] (not mean-pooled) to preserve
+spatial information. A lightweight per-patch transformer maps these to MAE-compatible
+tokens, then the frozen MAE decoder renders pixels.
 
 Usage:
     python mae/train_bridge.py
-    python mae/train_bridge.py --epochs 50 --bs 1024
+    python mae/train_bridge.py --epochs 30 --bs 1024
 """
 
 import argparse
@@ -27,121 +27,66 @@ from mae import sinusoidal_pos_embed_2d, TransformerBlock, build_mae
 
 
 # ---------------------------------------------------------------------------
-# Bridge architecture: cross-attention decoder
+# Bridge architecture: patch-level transformer
 # ---------------------------------------------------------------------------
 
-class CrossAttention(nn.Module):
-    """Queries attend to a conditioning vector."""
-
-    def __init__(self, dim, cond_dim, heads=4, dim_head=64):
-        super().__init__()
-        inner_dim = heads * dim_head
-        self.heads = heads
-        self.scale = dim_head ** -0.5
-        self.norm_q = nn.LayerNorm(dim)
-        self.norm_kv = nn.LayerNorm(cond_dim)
-        self.to_q = nn.Linear(dim, inner_dim, bias=False)
-        self.to_kv = nn.Linear(cond_dim, inner_dim * 2, bias=False)
-        self.to_out = nn.Linear(inner_dim, dim)
-
-    def forward(self, x, cond):
-        """x: (B, N, dim), cond: (B, M, cond_dim) -> (B, N, dim)"""
-        B, N, _ = x.shape
-        x_norm = self.norm_q(x)
-        c_norm = self.norm_kv(cond)
-        q = self.to_q(x_norm).reshape(B, N, self.heads, -1).transpose(1, 2)
-        kv = self.to_kv(c_norm).reshape(B, cond.shape[1], 2, self.heads, -1).permute(2, 0, 3, 1, 4)
-        k, v = kv[0], kv[1]
-        attn = (q @ k.transpose(-2, -1)) * self.scale
-        attn = attn.softmax(dim=-1)
-        out = (attn @ v).transpose(1, 2).reshape(B, N, -1)
-        return self.to_out(out)
-
-
 class LatentBridge(nn.Module):
-    """Produces MAE-compatible patch tokens from world model embeddings.
+    """Maps WM patch tokens to MAE-compatible patch tokens.
 
-    Uses cross-attention with learned patch queries to expand a 192-dim
-    global embedding into 272 position-aware tokens. Outputs are fed
-    through the frozen MAE decoder for pixel reconstruction.
+    Per-patch projection + lightweight self-attention refinement.
+    Spatial information is preserved since input is already 272 tokens.
 
-    Input:  [B, 192]
-    Output: [B, 272, mae_dim] tokens in MAE encoder output space
+    Input:  [B, 272, 192]  -- WM encoder patch tokens (pre-pooling)
+    Output: [B, 272, 384]  -- MAE-compatible tokens for frozen decoder
     """
 
-    def __init__(self, wm_dim=192, hidden_dim=256, mae_dim=384, num_patches=272,
+    def __init__(self, wm_dim=192, mae_dim=384, num_patches=272,
                  n_freq=16, n_time=17,
-                 depth=4, heads=8, dim_head=32, mlp_dim=1024, n_cond_tokens=16):
+                 depth=4, heads=8, dim_head=32, mlp_dim=1024):
         super().__init__()
-        self.num_patches = num_patches
 
-        # Project WM embedding to conditioning tokens
-        self.cond_proj = nn.Linear(wm_dim, hidden_dim * n_cond_tokens)
-        self.n_cond_tokens = n_cond_tokens
+        # Project WM patch dim to MAE dim
+        self.input_proj = nn.Linear(wm_dim, mae_dim)
 
-        # Learned patch queries
-        self.patch_queries = nn.Parameter(torch.randn(1, num_patches, hidden_dim) * 0.02)
-
-        # Sinusoidal positional embeddings for queries
-        pos = sinusoidal_pos_embed_2d(n_freq, n_time, hidden_dim)
+        # Sinusoidal positional embeddings
+        pos = sinusoidal_pos_embed_2d(n_freq, n_time, mae_dim)
         self.register_buffer("pos_embed", pos.unsqueeze(0))
 
-        # Cross-attention: queries attend to conditioning
-        self.cross_attn = CrossAttention(hidden_dim, hidden_dim, heads=heads, dim_head=dim_head)
-        self.cross_norm = nn.LayerNorm(hidden_dim)
-
-        # Self-attention transformer
+        # Self-attention transformer to refine tokens
         self.blocks = nn.ModuleList([
-            TransformerBlock(hidden_dim, heads, dim_head, mlp_dim)
+            TransformerBlock(mae_dim, heads, dim_head, mlp_dim)
             for _ in range(depth)
         ])
-        self.norm = nn.LayerNorm(hidden_dim)
-
-        # Project to MAE encoder output space
-        self.out_proj = nn.Linear(hidden_dim, mae_dim)
+        self.norm = nn.LayerNorm(mae_dim)
 
     def forward(self, x):
-        """x: (B, wm_dim) -> (B, 272, mae_dim)"""
-        B = x.shape[0]
-
-        # Conditioning tokens from WM embedding
-        cond = self.cond_proj(x).reshape(B, self.n_cond_tokens, -1)
-
-        # Patch queries + positional embeddings
-        queries = self.patch_queries.expand(B, -1, -1) + self.pos_embed
-
-        # Cross-attention
-        queries = queries + self.cross_attn(queries, cond)
-        queries = self.cross_norm(queries)
-
-        # Self-attention refinement
+        """x: (B, 272, wm_dim) -> (B, 272, mae_dim)"""
+        x = self.input_proj(x)  # (B, 272, mae_dim)
+        x = x + self.pos_embed
         for block in self.blocks:
-            queries = block(queries)
-        queries = self.norm(queries)
-
-        # Project to MAE space
-        return self.out_proj(queries)  # (B, 272, mae_dim)
+            x = block(x)
+        return self.norm(x)
 
 
 # ---------------------------------------------------------------------------
 # Dataset: paired (wm_embedding, logmag_frame)
 # ---------------------------------------------------------------------------
 
-class PairedEmbeddingDataset(Dataset):
-    """Paired dataset: world model embedding + log-magnitude frame.
+class PairedPatchDataset(Dataset):
+    """Paired dataset: WM patch embeddings + log-magnitude frame.
 
     Flattens trajectory dimension: [N, 16, ...] -> [N*16, ...]
     """
 
-    def __init__(self, emb_h5_path, logmag_h5_path, vmin, vmax):
-        with h5py.File(emb_h5_path, "r") as f:
-            emb = f["embeddings"][()]  # [N, 16, 192]
+    def __init__(self, patch_h5_path, logmag_h5_path, vmin, vmax):
+        with h5py.File(patch_h5_path, "r") as f:
+            patches = f["patch_embeddings"][()]  # [N, 16, 272, 192]
         with h5py.File(logmag_h5_path, "r") as f:
             logmag = f["logmag"][()]  # [N, 16, 256, 51]
 
-        N, T = emb.shape[:2]
-        self.embeddings = emb.reshape(N * T, -1).astype(np.float32)     # [N*16, 192]
-        logmag_flat = logmag.reshape(N * T, 256, 51).astype(np.float32)  # [N*16, 256, 51]
+        N, T = patches.shape[:2]
+        self.patches = patches.reshape(N * T, 272, 192).astype(np.float32)  # [N*16, 272, 192]
+        logmag_flat = logmag.reshape(N * T, 256, 51).astype(np.float32)
 
         # Normalize to [0, 1]
         self.vmin = vmin
@@ -150,12 +95,12 @@ class PairedEmbeddingDataset(Dataset):
         self.frames = np.clip((logmag_flat - vmin) / scale, 0.0, 1.0)
 
     def __len__(self):
-        return len(self.embeddings)
+        return len(self.patches)
 
     def __getitem__(self, idx):
-        emb = torch.from_numpy(self.embeddings[idx])         # (192,)
+        patches = torch.from_numpy(self.patches[idx])         # (272, 192)
         frame = torch.from_numpy(self.frames[idx]).unsqueeze(0)  # (1, 256, 51)
-        return emb, frame
+        return patches, frame
 
 
 # ---------------------------------------------------------------------------
@@ -206,15 +151,15 @@ def train(args):
     mae_decoder = mae_model.decoder  # frozen, but gradients flow through for bridge training
     print(f"Loaded frozen MAE decoder from {mae_ckpt}")
 
-    # Datasets
+    # Datasets (patch-level embeddings, not mean-pooled)
     print("Loading paired datasets...")
-    train_ds = PairedEmbeddingDataset(
-        str(cache_dir / "embeddings_train.h5"),
+    train_ds = PairedPatchDataset(
+        str(cache_dir / "patch_embeddings_train.h5"),
         str(cache_dir / "logmag_train.h5"),
         vmin, vmax,
     )
-    val_ds = PairedEmbeddingDataset(
-        str(cache_dir / "embeddings_val.h5"),
+    val_ds = PairedPatchDataset(
+        str(cache_dir / "patch_embeddings_val.h5"),
         str(cache_dir / "logmag_val.h5"),
         vmin, vmax,
     )
@@ -229,11 +174,11 @@ def train(args):
         num_workers=args.workers, pin_memory=True,
     )
 
-    # Bridge (cross-attention -> MAE tokens -> frozen MAE decoder)
+    # Bridge (patch-level projection + refinement -> frozen MAE decoder)
     bridge = LatentBridge(
-        wm_dim=192, hidden_dim=256, mae_dim=384, num_patches=272,
+        wm_dim=192, mae_dim=384, num_patches=272,
         n_freq=16, n_time=17,
-        depth=4, heads=8, dim_head=32, mlp_dim=1024, n_cond_tokens=16,
+        depth=4, heads=8, dim_head=32, mlp_dim=1024,
     ).to(device)
     n_params = sum(p.numel() for p in bridge.parameters())
     print(f"Bridge parameters: {n_params:,} ({n_params/1e6:.1f}M)")
@@ -262,13 +207,13 @@ def train(args):
         n_batches = 0
         t0 = time.time()
 
-        for emb_batch, frame_batch in train_loader:
-            emb_batch = emb_batch.to(device)
+        for patch_batch, frame_batch in train_loader:
+            patch_batch = patch_batch.to(device)  # (B, 272, 192)
             frame_batch = frame_batch.to(device)
             gt_spec = frame_batch.squeeze(1)  # (B, 256, 51)
 
-            # Bridge -> MAE tokens -> frozen MAE decoder -> spectrogram
-            tokens = bridge(emb_batch)  # (B, 272, 384)
+            # Bridge: WM patches -> MAE tokens -> frozen MAE decoder -> spectrogram
+            tokens = bridge(patch_batch)  # (B, 272, 384)
             _, pred_spec = mae_decoder(tokens, visible_indices=None)  # (B, 256, 51)
             loss = nn.functional.mse_loss(pred_spec, gt_spec)
 
