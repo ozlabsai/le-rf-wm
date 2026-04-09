@@ -23,6 +23,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from train_bridge import LatentBridge
+from mae import build_mae
 from perturbations import noise_burst, signal_injection, signal_dropout, frequency_shift, temporal_reversal
 from dataset import load_norm_stats
 
@@ -30,7 +31,7 @@ from dataset import load_norm_stats
 class RFWorldModelImagination:
     """End-to-end pipeline for visualizing world model predictions."""
 
-    def __init__(self, wm_checkpoint, bridge_checkpoint,
+    def __init__(self, wm_checkpoint, mae_checkpoint, bridge_checkpoint,
                  norm_stats_path, mae_norm_stats_path, device=None):
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -45,7 +46,14 @@ class RFWorldModelImagination:
         self.wm_mean = torch.tensor(wm_stats["mean"], dtype=torch.float32).view(1, 2, 1, 1).to(self.device)
         self.wm_std = torch.tensor(wm_stats["std"], dtype=torch.float32).view(1, 2, 1, 1).to(self.device)
 
-        # Load bridge (per-patch MLP, direct pixel output)
+        # Load MAE decoder (for smooth spatial reconstruction)
+        print(f"Loading MAE decoder from {mae_checkpoint}...")
+        mae = build_mae().to(self.device)
+        mae.load_state_dict(torch.load(mae_checkpoint, map_location=self.device, weights_only=True))
+        mae.requires_grad_(False)
+        self.mae_decoder = mae.decoder
+
+        # Load bridge (per-patch projection 192 -> 384)
         print(f"Loading bridge from {bridge_checkpoint}...")
         self.bridge = LatentBridge().to(self.device)
         self.bridge.load_state_dict(torch.load(bridge_checkpoint, map_location=self.device, weights_only=True))
@@ -90,7 +98,7 @@ class RFWorldModelImagination:
         return emb
 
     def _patches_to_spectrogram(self, patches):
-        """Convert WM patch tokens to spectrogram via bridge.
+        """Convert WM patch tokens to spectrogram via bridge + MAE decoder.
 
         Args:
             patches: (N, 272, 192) WM encoder patch tokens
@@ -98,7 +106,8 @@ class RFWorldModelImagination:
             spectrograms: (N, 256, 51) normalized [0, 1]
         """
         with torch.no_grad():
-            specs = self.bridge(patches)  # (N, 256, 51)
+            tokens = self.bridge(patches)  # (N, 272, 384)
+            _, specs = self.mae_decoder(tokens, visible_indices=None)
         return specs.clamp(0, 1)
 
     def _encode_obs_patches(self, obs):
@@ -214,6 +223,7 @@ def smoke_test(args):
     # Load pipeline
     pipeline = RFWorldModelImagination(
         wm_checkpoint=args.wm_ckpt,
+        mae_checkpoint=args.mae_ckpt,
         bridge_checkpoint=args.bridge_ckpt,
         norm_stats_path=args.wm_norm_stats,
         mae_norm_stats_path=args.mae_norm_stats,
@@ -288,6 +298,7 @@ def smoke_test(args):
 def main():
     parser = argparse.ArgumentParser(description="Imagination pipeline smoke test")
     parser.add_argument("--wm_ckpt", default="/workspace/data/lewm_rf_epoch_99_numpreds6_object.ckpt")
+    parser.add_argument("--mae_ckpt", default="mae/mae_best.ckpt")
     parser.add_argument("--bridge_ckpt", default="mae/bridge_best.ckpt")
     parser.add_argument("--wm_norm_stats", default="/workspace/data/norm_stats.json")
     parser.add_argument("--mae_norm_stats", default="mae/cache/norm_stats.json")
