@@ -23,49 +23,50 @@ from torch.utils.data import Dataset, DataLoader
 from einops import rearrange
 
 sys.path.insert(0, str(Path(__file__).parent))
-from mae import sinusoidal_pos_embed_2d, TransformerBlock, build_mae
 
 
 # ---------------------------------------------------------------------------
-# Bridge architecture: patch-level transformer
+# Bridge architecture: per-patch MLP decoder
 # ---------------------------------------------------------------------------
 
 class LatentBridge(nn.Module):
-    """Maps WM patch tokens to MAE-compatible patch tokens.
+    """Direct per-patch decoder: WM patch tokens -> spectrogram pixels.
 
-    Per-patch projection + lightweight self-attention refinement.
-    Spatial information is preserved since input is already 272 tokens.
+    Each of the 272 patches independently maps its 192-dim token
+    to 48 pixel values (16 freq x 3 time). No transformer, no MAE.
+    Reassembles the 272 patches into a (256, 51) spectrogram.
 
-    Input:  [B, 272, 192]  -- WM encoder patch tokens (pre-pooling)
-    Output: [B, 272, 384]  -- MAE-compatible tokens for frozen decoder
+    Input:  [B, 272, 192]
+    Output: [B, 256, 51]
     """
 
-    def __init__(self, wm_dim=192, mae_dim=384, num_patches=272,
-                 n_freq=16, n_time=17,
-                 depth=4, heads=8, dim_head=32, mlp_dim=1024):
+    def __init__(self, hidden_dim=192, patch_freq=16, patch_time=3,
+                 n_freq=16, n_time=17):
         super().__init__()
+        self.n_freq = n_freq
+        self.n_time = n_time
+        self.patch_freq = patch_freq
+        self.patch_time = patch_time
+        patch_pixels = patch_freq * patch_time  # 48
 
-        # Project WM patch dim to MAE dim
-        self.input_proj = nn.Linear(wm_dim, mae_dim)
-
-        # Sinusoidal positional embeddings
-        pos = sinusoidal_pos_embed_2d(n_freq, n_time, mae_dim)
-        self.register_buffer("pos_embed", pos.unsqueeze(0))
-
-        # Self-attention transformer to refine tokens
-        self.blocks = nn.ModuleList([
-            TransformerBlock(mae_dim, heads, dim_head, mlp_dim)
-            for _ in range(depth)
-        ])
-        self.norm = nn.LayerNorm(mae_dim)
+        self.mlp = nn.Sequential(
+            nn.Linear(hidden_dim, 256),
+            nn.GELU(),
+            nn.Linear(256, 256),
+            nn.GELU(),
+            nn.Linear(256, patch_pixels),
+        )
 
     def forward(self, x):
-        """x: (B, 272, wm_dim) -> (B, 272, mae_dim)"""
-        x = self.input_proj(x)  # (B, 272, mae_dim)
-        x = x + self.pos_embed
-        for block in self.blocks:
-            x = block(x)
-        return self.norm(x)
+        """x: (B, 272, 192) -> (B, 256, 51)"""
+        B, N, D = x.shape
+        # Per-patch MLP
+        flat = x.reshape(B * N, D)
+        pixels = self.mlp(flat)  # (B*272, 48)
+        pixels = pixels.reshape(B, self.n_freq, self.n_time, self.patch_freq, self.patch_time)
+        # Reassemble: (B, n_freq, n_time, pf, pt) -> (B, n_freq*pf, n_time*pt)
+        spec = pixels.permute(0, 1, 3, 2, 4).reshape(B, self.n_freq * self.patch_freq, self.n_time * self.patch_time)
+        return spec  # (B, 256, 51)
 
 
 # ---------------------------------------------------------------------------
@@ -117,20 +118,18 @@ class PairedPatchDataset(Dataset):
 # SSIM helpers
 # ---------------------------------------------------------------------------
 
-def compute_bridge_ssim(bridge, mae_decoder, dataloader, device):
-    """SSIM for bridge -> MAE decoder reconstruction vs ground truth."""
+def compute_bridge_ssim(bridge, dataloader, device):
+    """SSIM for bridge direct reconstruction vs ground truth."""
     from torchmetrics.image import StructuralSimilarityIndexMeasure
     ssim_metric = StructuralSimilarityIndexMeasure(data_range=1.0).to(device)
 
     bridge.eval()
     with torch.no_grad():
-        for emb_batch, frame_batch in dataloader:
-            emb_batch = emb_batch.to(device)
+        for patch_batch, frame_batch in dataloader:
+            patch_batch = patch_batch.to(device)
             frame_batch = frame_batch.to(device)
 
-            tokens = bridge(emb_batch)  # (B, 272, 384)
-            _, recon = mae_decoder(tokens, visible_indices=None)  # (B, 256, 51)
-            recon = recon.unsqueeze(1).clamp(0, 1)
+            recon = bridge(patch_batch).unsqueeze(1).clamp(0, 1)  # (B, 1, 256, 51)
             ssim_metric.update(recon, frame_batch)
 
     return ssim_metric.compute().item()
@@ -152,14 +151,6 @@ def train(args):
     stats = json.load(open(norm_path))
     vmin, vmax = stats["min"], stats["max"]
     print(f"Norm stats: min={vmin:.4f}, max={vmax:.4f}")
-
-    # Load frozen MAE (we use its decoder for rendering)
-    mae_model = build_mae().to(device)
-    mae_ckpt = mae_dir / "mae_best.ckpt"
-    mae_model.load_state_dict(torch.load(mae_ckpt, map_location=device, weights_only=True))
-    mae_model.requires_grad_(False)
-    mae_decoder = mae_model.decoder  # frozen, but gradients flow through for bridge training
-    print(f"Loaded frozen MAE decoder from {mae_ckpt}")
 
     # Datasets (patch-level embeddings, not mean-pooled)
     print("Loading paired datasets...")
@@ -184,11 +175,10 @@ def train(args):
         num_workers=args.workers, pin_memory=True,
     )
 
-    # Bridge (patch-level projection + refinement -> frozen MAE decoder)
+    # Bridge (per-patch MLP, direct pixel output)
     bridge = LatentBridge(
-        wm_dim=192, mae_dim=384, num_patches=272,
+        hidden_dim=192, patch_freq=16, patch_time=3,
         n_freq=16, n_time=17,
-        depth=4, heads=8, dim_head=32, mlp_dim=1024,
     ).to(device)
     n_params = sum(p.numel() for p in bridge.parameters())
     print(f"Bridge parameters: {n_params:,} ({n_params/1e6:.1f}M)")
@@ -222,9 +212,8 @@ def train(args):
             frame_batch = frame_batch.to(device)
             gt_spec = frame_batch.squeeze(1)  # (B, 256, 51)
 
-            # Bridge: WM patches -> MAE tokens -> frozen MAE decoder -> spectrogram
-            tokens = bridge(patch_batch)  # (B, 272, 384)
-            _, pred_spec = mae_decoder(tokens, visible_indices=None)  # (B, 256, 51)
+            # Bridge: WM patches -> pixels directly
+            pred_spec = bridge(patch_batch)  # (B, 256, 51)
             loss = nn.functional.mse_loss(pred_spec, gt_spec)
 
             optimizer.zero_grad()
@@ -244,7 +233,7 @@ def train(args):
 
         # Periodic SSIM check
         if (epoch + 1) % args.check_every == 0 or epoch == args.epochs - 1:
-            bridge_ssim = compute_bridge_ssim(bridge, mae_decoder, val_loader, device)
+            bridge_ssim = compute_bridge_ssim(bridge, val_loader, device)
             print(f"  Bridge SSIM: {bridge_ssim:.4f}")
 
             if bridge_ssim > best_ssim:

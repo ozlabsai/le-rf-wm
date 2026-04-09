@@ -28,13 +28,12 @@ def get_pipeline():
         mae_dir = PROJECT_ROOT / "mae"
 
         wm_ckpt = os.environ.get("WM_CKPT", str(data_dir / "lewm_rf_epoch_100_object.ckpt"))
-        mae_ckpt = os.environ.get("MAE_CKPT", str(mae_dir / "mae_best.ckpt"))
         bridge_ckpt = os.environ.get("BRIDGE_CKPT", str(mae_dir / "bridge_best.ckpt"))
         wm_norm = os.environ.get("WM_NORM_STATS", str(data_dir / "norm_stats.json"))
         mae_norm = os.environ.get("MAE_NORM_STATS", str(mae_dir / "cache" / "norm_stats.json"))
 
         # Check files exist
-        for label, path in [("WM checkpoint", wm_ckpt), ("MAE checkpoint", mae_ckpt),
+        for label, path in [("WM checkpoint", wm_ckpt),
                             ("Bridge checkpoint", bridge_ckpt), ("WM norm stats", wm_norm),
                             ("MAE norm stats", mae_norm)]:
             if not Path(path).exists():
@@ -44,7 +43,6 @@ def get_pipeline():
 
         _pipeline = RFWorldModelImagination(
             wm_checkpoint=wm_ckpt,
-            mae_checkpoint=mae_ckpt,
             bridge_checkpoint=bridge_ckpt,
             norm_stats_path=wm_norm,
             mae_norm_stats_path=mae_norm,
